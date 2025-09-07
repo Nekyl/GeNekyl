@@ -713,7 +713,24 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Inline JavaScript -->
-    <script>
+        <script>
+        // No início do seu script, preparamos para carregar a lista de palavras
+        let wordlist = [];
+        
+        async function loadWordlist() {
+            try {
+                // Carrega o seu arquivo JSON com a lista de palavras
+                const response = await fetch('./pass.json');
+                wordlist = await response.json();
+                console.log(`Lista de palavras carregada com sucesso. Total: ${wordlist.length} palavras.`);
+            } catch (err) {
+                console.error('Falha ao carregar a lista de palavras:', err);
+                showNotification('Erro Crítico', 'Não foi possível carregar a lista de palavras para gerar frases secretas.', 'danger');
+            }
+        }
+        
+        // Dispara o carregamento da lista assim que o conteúdo da página estiver pronto
+        document.addEventListener('DOMContentLoaded', loadWordlist);
 
         /**
          * Gera um número inteiro aleatório criptograficamente seguro entre 0 (inclusivo) e max (exclusivo).
@@ -731,7 +748,6 @@
             // Preenche o buffer com um valor aleatório seguro
             window.crypto.getRandomValues(randomBuffer);
             // Calcula o número aleatório no intervalo [0, max)
-            // randomBuffer[0] / (0xFFFFFFFF + 1) gera um float entre 0 (inclusivo) e 1 (exclusivo)
             return Math.floor((randomBuffer[0] / (0xFFFFFFFF + 1)) * max);
         }
 
@@ -741,44 +757,17 @@
          */
         function shuffleArraySecure(array) {
             for (let i = array.length - 1; i > 0; i--) {
-                // Usa a função segura para obter o índice j
                 const j = getRandomIntSecure(i + 1);
-                // Troca os elementos array[i] e array[j]
                 [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
-
         // Constants
-        const CONSONANTS = 'bcdfghjklmnpqrstvwxyz';
-        const VOWELS = 'aeiou';
-        // Conjunto expandido de caracteres especiais comuns
         const SPECIAL_CHARS = '!@#$%^&*()-_=+[]{}\\|;:\'",.<>/?~`';
-        // Conjunto de caracteres ambíguos comuns
         const AMBIGUOUS_CHARS = 'Il1O0S5B8G6Z2';
         const UNICODE_CHARS = '°±µ¶§©®™¥€£¢¤¦¨«»←→↑↓⇒⇔∀∃∈∉∋∑∞∨∧∩∪∴∵∼≈≠≤≥⊂⊃⊆⊇⊕⊗⊥⋅⌈⌉⌊⌋⌠⌡〈〉αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ';
 
-        // Função para gerar uma palavra inventada
-        function generateInventedWord() {
-            const minLength = 3;
-            const maxLength = 8;
-            const length = getRandomIntSecure(maxLength - minLength + 1) + minLength;
-            
-            let word = '';
-            let useConsonant = getRandomIntSecure(2) === 0; // Começa aleatoriamente com consoante ou vogal
-            
-            for (let i = 0; i < length; i++) {
-                if (useConsonant) {
-                    word += CONSONANTS[getRandomIntSecure(CONSONANTS.length)];
-                } else {
-                    word += VOWELS[getRandomIntSecure(VOWELS.length)];
-                }
-                useConsonant = !useConsonant; // Alterna entre consoante e vogal
-            }
-            
-            return word;
-        }
-
+        // --- FUNÇÃO PRINCIPAL ATUALIZADA ---
         // Função para gerar senha
         function generatePassword(silent = false) {
             let password = '';
@@ -799,15 +788,20 @@
                 
                 password = generateRandomPassword(options);
                 entropy = calculatePasswordEntropy(password, options);
-            } else {
+            } else { // Modo Frase Secreta
                 const options = {
                     wordCount: parseInt(elements.wordCount?.value || '6'),
                     capitalization: elements.capitalization?.value || 'lowercase',
                     separator: elements.separator?.value || ' '
                 };
                 
-                password = generateInventedPassphrase(options);
-                entropy = Math.log2(Math.pow(26, 5)) * options.wordCount; // Estimativa simples
+                // **MUDANÇA AQUI:** Chamando a nova função Diceware
+                password = generateDicewarePassphrase(options);
+                
+                // **MUDANÇA AQUI:** Cálculo de entropia agora é preciso
+                // Usa `|| 1` como segurança para evitar log(0) se a lista falhar ao carregar
+                const entropyPerWord = Math.log2(wordlist.length || 1);
+                entropy = options.wordCount * entropyPerWord;
             }
             
             // Atualizar UI
@@ -822,7 +816,7 @@
             }
         }
 
-        // Função para gerar senha aleatória
+        // Função para gerar senha aleatória (sem alterações)
         function generateRandomPassword(options) {
             let charset = '';
             
@@ -844,7 +838,6 @@
             
             let password = '';
             
-            // Garantir pelo menos um de cada tipo se solicitado
             if (options.atLeastOneOfEach) {
                 const requiredChars = [];
                 if (options.useLowercase) requiredChars.push('abcdefghijklmnopqrstuvwxyz'[getRandomIntSecure(26)]);
@@ -852,22 +845,18 @@
                 if (options.useNumbers) requiredChars.push('0123456789'[getRandomIntSecure(10)]);
                 if (options.useSpecial) requiredChars.push(SPECIAL_CHARS[getRandomIntSecure(SPECIAL_CHARS.length)]);
                 
-                // Adicionar caracteres obrigatórios
                 for (const char of requiredChars) {
                     password += char;
                 }
                 
-                // Preencher o resto
                 for (let i = password.length; i < options.length; i++) {
                     password += charset[getRandomIntSecure(charset.length)];
                 }
                 
-                // Embaralhar a senha
                 const passwordArray = password.split('');
                 shuffleArraySecure(passwordArray);
                 password = passwordArray.join('');
             } else {
-                // Gerar normalmente
                 for (let i = 0; i < options.length; i++) {
                     password += charset[getRandomIntSecure(charset.length)];
                 }
@@ -876,16 +865,25 @@
             return password;
         }
 
-        // Função para gerar frase secreta inventada
-        function generateInventedPassphrase({
-            wordCount = 5,
+        // --- NOVA FUNÇÃO ---
+        // Função para gerar frase secreta usando o método Diceware (lista de palavras)
+        function generateDicewarePassphrase({
+            wordCount = 6,
             capitalization = 'lowercase',
-            separator = '-'
+            separator = ' '
         } = {}) {
+            // Verifica se a lista de palavras foi carregada
+            if (wordlist.length === 0) {
+                return "Erro: A lista de palavras não está disponível.";
+            }
+
             const words = [];
             for (let i = 0; i < wordCount; i++) {
-                let word = generateInventedWord(); // Esta função agora usa getRandomIntSecure internamente
+                // Sorteia um índice aleatório seguro
+                const randomIndex = getRandomIntSecure(wordlist.length);
+                let word = wordlist[randomIndex];
 
+                // Aplica a capitalização escolhida pelo usuário
                 switch (capitalization) {
                     case 'uppercase':
                         word = word.toUpperCase();
@@ -893,8 +891,7 @@
                     case 'title':
                         word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
                         break;
-                    // case 'lowercase': // é o padrão
-                    default:
+                    default: // 'lowercase' é o padrão
                         word = word.toLowerCase();
                 }
                 words.push(word);
@@ -902,16 +899,12 @@
             return words.join(separator);
         }
 
-       // Calcula a entropia estimada da senha, aplicando bônus e penalidades.
-        // NOTA: Para senhas geradas aleatoriamente com um CSPRNG, a entropia
-        // teórica (log2(N) * L) é geralmente a métrica mais relevante.
-        // As penalidades/bônus são mais úteis para avaliar senhas criadas por humanos.
+        // Calcula a entropia da senha (sem alterações)
         function calculatePasswordEntropy(password, options) {
             if (!password) return 0;
 
-            // 1. Calcular o tamanho do conjunto de caracteres (N) com base nas opções
             let charSetSize = 0;
-            let poolForEntropy = ''; // Pool usado apenas para cálculo N
+            let poolForEntropy = '';
 
             let tempLowercasePool = 'abcdefghijklmnopqrstuvwxyz';
             let tempUppercasePool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -925,7 +918,6 @@
                  tempLowercasePool = tempLowercasePool.replace(ambiguousRegex, '');
                  tempUppercasePool = tempUppercasePool.replace(ambiguousRegex, '');
                  tempNumbersPool = tempNumbersPool.replace(ambiguousRegex, '');
-                 // Não removemos ambíguos de outros conjuntos por padrão
             }
 
             if (options.useLowercase && tempLowercasePool) poolForEntropy += tempLowercasePool;
@@ -935,42 +927,37 @@
             if (options.useSpaces && tempSpacePool) poolForEntropy += tempSpacePool;
             if (options.useUnicode && tempUnicodePool) poolForEntropy += tempUnicodePool;
 
-            // Remove duplicados para obter o tamanho real do conjunto
             charSetSize = new Set(poolForEntropy).size;
 
              if (charSetSize === 0) {
                  console.warn("CharSetSize é 0 no cálculo de entropia. Verifique as opções.");
-                 return 0; // Evita log2(0)
+                 return 0;
              }
 
-             // 2. Calcular e retornar a entropia teórica base
              const theoreticalEntropy = Math.log2(charSetSize) * password.length;
-             return Math.max(0, theoreticalEntropy); // Garante que não seja negativa
+             return Math.max(0, theoreticalEntropy);
         }
 
-
-        // Get entropy description (mantido conforme original)
+        // Função de descrição da entropia (sem alterações)
         function getEntropyDescription(entropy) {
-        if (entropy < 40) return 'Muito fraca – Pode ser quebrada quase na hora.';
-        if (entropy < 60) return 'Fraca – Aguenta um pouco, mas cai fácil com ataques rápidos.';
-        if (entropy < 80) return 'Moderada – Dá trabalho, mas com esforço é possível quebrar em alguns dias.';
-        if (entropy < 100) return 'Forte – Difícil de quebrar, levaria anos para conseguir.';
-        if (entropy < 128) return 'Muito forte – Um desafio pesado, mesmo para ataques bem planejados.';
-        if (entropy < 258) return 'Segura – Aguenta firme, difícil até para ataques bem persistentes.';
-        if (entropy <= 500) return 'Ultra segura – Um verdadeiro pesadelo para quem tentar quebrar.';
-        return 'Fortíssima – Resiste até às técnicas mais avançadas que possam existir.';
-}
+            if (entropy < 40) return 'Muito fraca – Pode ser quebrada quase na hora.';
+            if (entropy < 60) return 'Fraca – Aguenta um pouco, mas cai fácil com ataques rápidos.';
+            if (entropy < 80) return 'Moderada – Dá trabalho, mas com esforço é possível quebrar em alguns dias.';
+            if (entropy < 100) return 'Forte – Difícil de quebrar, levaria anos para conseguir.';
+            if (entropy < 128) return 'Muito forte – Um desafio pesado, mesmo para ataques bem planejados.';
+            if (entropy < 258) return 'Segura – Aguenta firme, difícil até para ataques bem persistentes.';
+            if (entropy <= 500) return 'Ultra segura – Um verdadeiro pesadelo para quem tentar quebrar.';
+            return 'Fortíssima – Resiste até às técnicas mais avançadas que possam existir.';
+        }
 
+        // --- Restante do código (sem alterações) ---
 
-
-        // Sistema de Vibração (mantido conforme original)
         const VibrationSystem = {
             enabled: false,
             duration: 15,
             init() {
                 if ('vibrate' in navigator) {
                     this.enabled = true;
-                     // Tentativa de ativar a API via interação simulada (pode não funcionar em todos os browsers)
                     try { navigator.vibrate(1); } catch (e) { /* Ignora erro inicial */ }
                 }
             },
@@ -983,8 +970,6 @@
         };
         VibrationSystem.init();
 
-
-         // Elementos do DOM (Atualizado para incluir os checkboxes que faltavam)
         const elements = {
             passwordTab: document.getElementById('password-tab'),
             passphraseTab: document.getElementById('passphrase-tab'),
@@ -997,19 +982,17 @@
             entropyValue: document.getElementById('entropyValue'),
             entropyDescription: document.getElementById('entropyDescription'),
             passwordLength: document.getElementById('passwordLength'),
-            lengthValue: document.getElementById('lengthValue'), // Ligado ao input number
+            lengthValue: document.getElementById('lengthValue'),
             useLowercase: document.getElementById('useLowercase'),
             useUppercase: document.getElementById('useUppercase'),
             useNumbers: document.getElementById('useNumbers'),
             useSpecial: document.getElementById('useSpecial'),
             useSpaces: document.getElementById('useSpaces'),
             useUnicode: document.getElementById('useUnicode'),
-            // Adicionados:
             atLeastOneOfEach: document.getElementById('atLeastOneOfEach'),
             excludeAmbiguous: document.getElementById('excludeAmbiguous'),
-
             wordCount: document.getElementById('wordCount'),
-            wordCountValue: document.getElementById('wordCountValue'), // Ligado ao input number
+            wordCountValue: document.getElementById('wordCountValue'),
             capitalization: document.getElementById('capitalization'),
             separator: document.getElementById('separator'),
             generateBtn: document.getElementById('generateBtn'),
@@ -1021,76 +1004,60 @@
             toastMessage: document.getElementById('toastMessage')
         };
 
-
-        // Estado da aplicação (mantido conforme original)
         const state = {
-            mode: 'password', // 'password' ou 'passphrase'
-            passwordVisible: false // Controla se a senha está visível ou oculta
+            mode: 'password',
+            passwordVisible: false
         };
 
-        // Inicializar componentes Bootstrap (mantido conforme original)
-        let bootstrapToast = null; // Inicializa como null
+        let bootstrapToast = null;
          if(elements.notificationToast) {
             bootstrapToast = new bootstrap.Toast(elements.notificationToast, {
                 autohide: true,
-                delay: 3000 // Aumentado delay para melhor leitura
+                delay: 3000
             });
         }
 
-
-        // Event Listeners (Lógica principal mantida, com ajustes e correções)
         document.addEventListener('DOMContentLoaded', function() {
-            // 1. Esconder senha inicialmente (Define type='password' e ícone correto)
             hidePassword();
+            generatePassword(true);
 
-            // 2. Gerar senha inicial ao carregar
-            generatePassword(true); // Gera silenciosamente
-
-            // 3. Ouvintes das Abas
             elements.passwordTab?.addEventListener('click', function() {
                 if (state.mode !== 'password') {
                     state.mode = 'password';
                     VibrationSystem.vibrate();
-                    generatePassword(); // Gera nova senha ao trocar de aba
+                    generatePassword();
                 }
             });
             elements.passphraseTab?.addEventListener('click', function() {
                  if (state.mode !== 'passphrase') {
                     state.mode = 'passphrase';
                     VibrationSystem.vibrate();
-                    generatePassword(); // Gera nova frase ao trocar de aba
+                    generatePassword();
                  }
             });
 
-            // 4. Ouvintes para Comprimento da Senha (Slider e Input Number)
             elements.passwordLength?.addEventListener('input', handlePasswordLengthChange);
             elements.lengthValue?.addEventListener('change', handlePasswordLengthInputChange);
 
-             // 5. Ouvintes para Contagem de Palavras (Slider e Input Number)
             elements.wordCount?.addEventListener('input', handleWordCountChange);
             elements.wordCountValue?.addEventListener('change', handleWordCountInputChange);
 
-
-            // 6. Ouvintes para Opções da Frase Secreta
             elements.capitalization?.addEventListener('change', generatePassword);
             elements.separator?.addEventListener('change', generatePassword);
 
-            // 7. Ouvintes para Checkboxes de Tipo de Caractere
             const charTypeCheckboxes = [
                 elements.useLowercase, elements.useUppercase, elements.useNumbers,
                 elements.useSpecial, elements.useSpaces, elements.useUnicode
-            ].filter(el => el); // Filtra nulos se algum ID estiver errado
+            ].filter(el => el);
 
              charTypeCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', () => {
-                    // Garante que pelo menos um tipo de caractere base esteja selecionado
                     const baseTypesChecked = [
                         elements.useLowercase, elements.useUppercase,
                         elements.useNumbers, elements.useSpecial
                     ].filter(el => el).some(cb => cb.checked);
 
                     if (!baseTypesChecked && !elements.useSpaces?.checked && !elements.useUnicode?.checked) {
-                        // Se nenhum estiver marcado, remarca o que foi desmarcado (provavelmente minúsculas)
                         if (elements.useLowercase) elements.useLowercase.checked = true;
                         showNotification('Aviso', 'Pelo menos um tipo de caractere deve ser selecionado.', 'warning');
                     }
@@ -1098,26 +1065,17 @@
                 });
             });
 
-            // 8. Ouvintes para Checkboxes Adicionais (Garantir/Excluir)
              elements.atLeastOneOfEach?.addEventListener('change', generatePassword);
              elements.excludeAmbiguous?.addEventListener('change', generatePassword);
 
-
-            // 9. Ouvinte para Alternar Visibilidade
             elements.toggleVisibilityBtn?.addEventListener('click', togglePasswordVisibility);
-
-            // 10. Ouvinte para Copiar Senha
             elements.copyBtn?.addEventListener('click', handleCopyPassword);
 
-            // 11. Ouvintes para Botões Gerar (Desktop e Mobile)
             elements.generateBtn?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
             elements.generateBtnMobile?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
             elements.generatePhraseBtn?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
             elements.generatePassphraseBtnMobile?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
-
         });
-
-        // --- Funções Handler Refatoradas ---
 
         function handlePasswordLengthChange() {
             const value = elements.passwordLength.value;
@@ -1139,7 +1097,6 @@
             VibrationSystem.vibrate();
             generatePassword();
         }
-
 
          function handleWordCountChange() {
             const value = elements.wordCount.value;
@@ -1167,11 +1124,10 @@
                  hidePassword();
              } else {
                  showPassword();
-                 // Ocultar automaticamente após um delay
-                 setTimeout(hidePassword, 10000); // 10 segundos
+                 setTimeout(hidePassword, 10000);
                  showNotification('Aviso', 'Senha será ocultada em 10 segundos.', 'info');
              }
-             VibrationSystem.vibrate(20); // Vibração um pouco mais longa para feedback
+             VibrationSystem.vibrate(20);
          }
 
         async function handleCopyPassword() {
@@ -1180,37 +1136,27 @@
             try {
                 await navigator.clipboard.writeText(elements.passwordOutput.value);
                 showNotification('Sucesso', 'Copiado para a área de transferência!');
-                VibrationSystem.vibrate(50); // Vibração mais forte ao copiar
+                VibrationSystem.vibrate(50);
                 animateCopyButton(elements.copyBtn);
-
-                 // Gera uma nova senha *depois* de copiar e mostrar a notificação
-                 // Usa setTimeout para garantir que a cópia foi processada
-                 setTimeout(() => generatePassword(true), 500); // Gera silenciosamente após 0.5s
+                 setTimeout(() => generatePassword(true), 500);
             } catch (err) {
                 console.error('Erro ao copiar senha:', err);
                 showNotification('Erro', 'Falha ao copiar. Verifique permissões.', 'danger');
             }
         }
 
-
-        // Funções auxiliares de UI (show/hide/copy/etc.)
-
         function showPassword() {
             if (!elements.passwordOutput || !elements.toggleVisibilityBtn) return;
-            // Em vez de mudar 'type', que pode não funcionar bem com textarea,
-            // usamos uma classe CSS e ajustamos o estilo diretamente se necessário.
-            // Mas a forma mais compatível é usar type=text/password em um INPUT.
-            // Mantendo o type aqui por enquanto, mas ciente das limitações com textarea.
-             elements.passwordOutput.type = 'text'; // Tenta mudar o tipo (pode não ter efeito visual em todos os browsers para textarea)
-             elements.passwordOutput.style.webkitTextSecurity = 'none'; // Força mostrar o texto no Webkit
+             elements.passwordOutput.type = 'text';
+             elements.passwordOutput.style.webkitTextSecurity = 'none';
              elements.toggleVisibilityBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
              state.passwordVisible = true;
         }
 
         function hidePassword() {
             if (!elements.passwordOutput || !elements.toggleVisibilityBtn) return;
-             elements.passwordOutput.type = 'password'; // Tenta mudar o tipo
-             elements.passwordOutput.style.webkitTextSecurity = 'disc'; // Força ocultar o texto no Webkit
+             elements.passwordOutput.type = 'password';
+             elements.passwordOutput.style.webkitTextSecurity = 'disc';
              elements.toggleVisibilityBtn.innerHTML = '<i class="fas fa-eye"></i>';
              state.passwordVisible = false;
         }
@@ -1226,17 +1172,12 @@
         function updateEntropyDisplay(entropy) {
             if (!elements.entropyBar || !elements.entropyValue || !elements.entropyDescription) return;
             
-            // Atualizar valor
             elements.entropyValue.textContent = `Entropia: ${Math.round(entropy)} bits`;
-            
-            // Atualizar descrição
             elements.entropyDescription.textContent = getEntropyDescription(entropy);
             
-            // Atualizar barra de progresso
             const percentage = Math.min(100, (entropy / 128) * 100);
             elements.entropyBar.style.width = `${percentage}%`;
             
-            // Cores baseadas na força
             let colorClass = 'bg-danger';
             if (entropy >= 100) colorClass = 'bg-success';
             else if (entropy >= 80) colorClass = 'bg-warning';
@@ -1251,7 +1192,6 @@
             elements.toastTitle.textContent = title;
             elements.toastMessage.textContent = message;
             
-            // Adicionar ícone baseado no tipo
             let icon = 'fas fa-check-circle';
             if (type === 'warning') icon = 'fas fa-exclamation-triangle';
             else if (type === 'danger') icon = 'fas fa-times-circle';
@@ -1262,20 +1202,17 @@
             bootstrapToast.show();
         }
 
-        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
                     .then((registration) => {
                         console.log('Service Worker registrado com sucesso:', registration.scope);
                         
-                        // Verificar atualizações
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
                             newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed') {
                                     if (navigator.serviceWorker.controller) {
-                                        // Nova versão disponível
                                         showNotification('Atualização', 'Nova versão disponível. Recarregue a página.', 'info');
                                     }
                                 }
@@ -1288,16 +1225,13 @@
             });
         }
 
-        // Detecta se o app foi instalado como PWA
         let deferredPrompt;
         let installButton;
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Previne o prompt automático
             e.preventDefault();
             deferredPrompt = e;
             
-            // Cria botão de instalação se não existir
             if (!installButton) {
                 createInstallButton();
             }
@@ -1323,7 +1257,6 @@
             document.body.appendChild(installButton);
         }
 
-        // Remove o botão se o app já foi instalado
         window.addEventListener('appinstalled', () => {
             console.log('PWA foi instalado');
             if (installButton) {
@@ -1332,31 +1265,26 @@
             deferredPrompt = null;
         });
 
-        // Detecta se está rodando como PWA
         function isPWA() {
             return window.matchMedia('(display-mode: standalone)').matches || 
                    window.navigator.standalone === true;
         }
 
-        // Adiciona classe CSS se estiver rodando como PWA
         if (isPWA()) {
             document.documentElement.classList.add('pwa-mode');
             console.log('Rodando como PWA');
         }
 
-        // Suporte para atalhos do manifest (URLs com parâmetros)
         window.addEventListener('load', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
             
             if (mode === 'password') {
-                // Ativa a aba de senha
                 const passwordTab = document.getElementById('password-tab');
                 if (passwordTab) {
                     passwordTab.click();
                 }
             } else if (mode === 'passphrase') {
-                // Ativa a aba de frase secreta
                 const passphraseTab = document.getElementById('passphrase-tab');
                 if (passphraseTab) {
                     passphraseTab.click();
