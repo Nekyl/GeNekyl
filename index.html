@@ -756,248 +756,127 @@
         const SPECIAL_CHARS = '!@#$%^&*()-_=+[]{}\\|;:\'",.<>/?~`';
         // Conjunto de caracteres ambíguos comuns
         const AMBIGUOUS_CHARS = 'Il1O0S5B8G6Z2';
-        const UNICODE_CHARS = '°±µ¶§©®™¥€£¢¤¦¨«»←→↑↓⇒⇔∀∃∈∉∋∑∞∨∧∩∪∴∵∼≈≠≤≥⊂⊃⊆⊇⊕⊗⊥⋅⌈⌉⌊⌋⌠⌡〈〉♠♣♥♦★✓✗✘⚠⛔';
+        const UNICODE_CHARS = '°±µ¶§©®™¥€£¢¤¦¨«»←→↑↓⇒⇔∀∃∈∉∋∑∞∨∧∩∪∴∵∼≈≠≤≥⊂⊃⊆⊇⊕⊗⊥⋅⌈⌉⌊⌋⌠⌡〈〉αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ';
 
-        // Keyboard patterns for detection (mantidos conforme original)
-        const KEYBOARD_PATTERNS = [
-            'qwert', 'asdfg', 'zxcvb', 'yuiop', 'hjkl', 'nm',  // Horizontal
-            'qaz', 'wsx', 'edc', 'rfv', 'tgb', 'yhn', 'ujm', 'ik', 'ol', 'p',  // Vertical
-            '1234567890',  // Sequential numbers
-            'qwertyuiop', 'asdfghjkl', 'zxcvbnm'  // Complete lines
-        ];
-
-        // Calculate Shannon entropy (mantido conforme original)
-        function calculateShannonEntropy(text) {
-            if (!text) return 0;
-            const freq = {};
-            for (const c of text) {
-                freq[c] = (freq[c] || 0) + 1;
-            }
-            let entropy = 0;
-            const length = text.length;
-            for (const count of Object.values(freq)) {
-                const probability = count / length;
-                if (probability > 0) { // Evitar log2(0)
-                   entropy -= probability * Math.log2(probability);
-                }
-            }
-            return entropy * length; // Retorna a entropia total da string
-        }
-
-        function checkSequences(text) {
-            const textLower = text.toLowerCase();
-            let penalty = 0;
-            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-            const digits = '0123456789';
-            for (let i = 0; i < text.length - 2; i++) {
-                const chunk = textLower.slice(i, i + 3);
-                if (alphabet.includes(chunk) || digits.includes(chunk)) penalty += 0.1;
-                if (alphabet.includes(chunk.split('').reverse().join('')) || digits.includes(chunk.split('').reverse().join(''))) {
-                    penalty += 0.1;
-                }
-            }
-            return Math.min(penalty, 1.0);
-        }
-
-        function checkKeyboardPatterns(text) {
-            const textLower = text.toLowerCase();
-            let penalty = 0;
-            for (const pattern of KEYBOARD_PATTERNS) {
-                if (textLower.includes(pattern) || textLower.includes(pattern.split('').reverse().join(''))) {
-                     penalty += 0.2;
-                }
-            }
-            return Math.min(penalty, 1.0);
-        }
-
-        function checkPatternRepetition(text) {
-            let penalty = 0;
-            const textLen = text.length;
-            for (let patternLen = 2; patternLen < Math.min(6, Math.floor(textLen / 2)); patternLen++) {
-                for (let i = 0; i <= textLen - 2 * patternLen; i++) {
-                    const pattern = text.slice(i, i + patternLen);
-                    const restOfString = text.slice(i + patternLen);
-                     // Escape regex special characters
-                    const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    if (restOfString.match(new RegExp(escapedPattern))) {
-                        penalty += 0.1 * patternLen; // Penalidade maior para padrões mais longos
-                    }
-                }
-            }
-            return Math.min(penalty, 1.0);
-        }
-
-
-        function analyzeCharDistribution(text) {
-             if (!text || text.length < 4) return 0; // Precisa de comprimento mínimo para analisar distribuição
-
-            const length = text.length;
-            const counts = {
-                lower: (text.match(/[a-z]/g) || []).length,
-                upper: (text.match(/[A-Z]/g) || []).length,
-                digit: (text.match(/[0-9]/g) || []).length,
-                special: (text.match(/[^a-zA-Z0-9\s]/g) || []).length, // Exclui espaço da contagem especial aqui
-                space: (text.match(/ /g) || []).length // Contagem separada para espaços
-            };
-
-            const numTypesUsed = Object.values(counts).filter(count => count > 0).length;
-            if (numTypesUsed <= 1) return 0; // Pouca ou nenhuma mistura
-
-            // Calculate ideal distribution based on the number of types ACTUALLY used
-            const idealRatio = 1.0 / numTypesUsed;
-            let totalDeviation = 0;
-
-            for(const type in counts){
-                 if(counts[type] > 0){
-                     const ratio = counts[type] / length;
-                     totalDeviation += Math.abs(ratio - idealRatio);
-                 }
-            }
-
-            // A média do desvio absoluto; quanto menor, melhor a distribuição
-            // Normaliza para um valor entre 0 e 1 (0 = desvio máximo, 1 = distribuição perfeita)
-            // O fator 2 ajusta a escala, pois cada desvio é contado duas vezes (um tipo tem a mais, outro a menos)
-             const distributionScore = Math.max(0, 1 - (totalDeviation / (2 * (1 - idealRatio))));
-
-            // Bônus baseado na pontuação de distribuição (até 15% da entropia base)
-             const bonus = distributionScore * 0.15;
-             return bonus; // Retorna o fator de bônus (não a entropia diretamente)
-        }
-
-        // Generate hybrid password using secure random source
-        function generateHybridPassword({
-            length = 16,
-            useUppercase = true,
-            useLowercase = true,
-            useNumbers = true,
-            useSpecial = true,
-            useSpaces = false,
-            useUnicode = false, // Alterado padrão para false, pois Unicode pode causar problemas
-            atLeastOneOfEach = true,
-            excludeAmbiguous = true
-        } = {}) {
-            try {
-                let masterCharsPool = ''; // Pool completo para preenchimento
-                const requiredChars = []; // Array para garantir um de cada tipo selecionado
-
-                // --- Construir Pools e Caracteres Requeridos ---
-                let lowercasePool = 'abcdefghijklmnopqrstuvwxyz';
-                let uppercasePool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                let numbersPool = '0123456789';
-                let specialPool = SPECIAL_CHARS;
-                let unicodePool = UNICODE_CHARS;
-                let spacePool = ' ';
-
-                if (excludeAmbiguous) {
-                    const ambiguousRegex = new RegExp(`[${AMBIGUOUS_CHARS}]`, 'g');
-                    lowercasePool = lowercasePool.replace(ambiguousRegex, '');
-                    uppercasePool = uppercasePool.replace(ambiguousRegex, '');
-                    numbersPool = numbersPool.replace(ambiguousRegex, '');
-                    // Não remover ambíguos de especiais, unicode ou espaços (pode não fazer sentido)
-                }
-
-                if (useLowercase && lowercasePool) {
-                    masterCharsPool += lowercasePool;
-                    if (atLeastOneOfEach) requiredChars.push(lowercasePool[getRandomIntSecure(lowercasePool.length)]);
-                }
-                if (useUppercase && uppercasePool) {
-                    masterCharsPool += uppercasePool;
-                    if (atLeastOneOfEach) requiredChars.push(uppercasePool[getRandomIntSecure(uppercasePool.length)]);
-                }
-                if (useNumbers && numbersPool) {
-                    masterCharsPool += numbersPool;
-                    if (atLeastOneOfEach) requiredChars.push(numbersPool[getRandomIntSecure(numbersPool.length)]);
-                }
-                if (useSpecial && specialPool) {
-                    masterCharsPool += specialPool;
-                    if (atLeastOneOfEach) requiredChars.push(specialPool[getRandomIntSecure(specialPool.length)]);
-                }
-                if (useSpaces && spacePool) {
-                    masterCharsPool += spacePool;
-                    if (atLeastOneOfEach) requiredChars.push(spacePool); // Só há 1 opção
-                }
-                 if (useUnicode && unicodePool) {
-                    masterCharsPool += unicodePool;
-                    if (atLeastOneOfEach) requiredChars.push(unicodePool[getRandomIntSecure(unicodePool.length)]);
-                }
-
-                if (!masterCharsPool) {
-                    // Tenta usar minúsculas como fallback se nada for selecionado
-                    masterCharsPool = 'abcdefghijklmnopqrstuvwxyz';
-                     console.warn('Nenhum tipo de caractere selecionado ou pools vazios. Usando minúsculas como fallback.');
-                     // Não adiciona aos requiredChars neste caso de fallback
-                     atLeastOneOfEach = false; // Desativa a garantia se caímos no fallback
-                }
-
-                const passwordChars = [];
-
-                 // Adicionar caracteres requeridos primeiro (se houver)
-                if (atLeastOneOfEach) {
-                    // Garante que não temos mais caracteres requeridos do que o comprimento da senha
-                    const numRequired = Math.min(requiredChars.length, length);
-                    // Embaralha os requeridos para não aparecerem sempre na mesma ordem
-                    shuffleArraySecure(requiredChars);
-                    for(let i = 0; i < numRequired; i++) {
-                        passwordChars.push(requiredChars[i]);
-                    }
-                }
-
-                // --- Gerar Caracteres Restantes ---
-                const remainingLength = length - passwordChars.length;
-                if (remainingLength > 0 && masterCharsPool) {
-                    for (let i = 0; i < remainingLength; i++) {
-                        // Seleciona aleatoriamente do pool mestre usando a função segura
-                        passwordChars.push(masterCharsPool[getRandomIntSecure(masterCharsPool.length)]);
-                    }
-                } else if (remainingLength < 0) {
-                     // Se requiredChars era maior que length, truncamos
-                     passwordChars.length = length;
-                }
-
-
-                // --- Embaralhar o Resultado Final ---
-                // Embaralha todos os caracteres na senha final para misturar os requeridos com os aleatórios
-                shuffleArraySecure(passwordChars);
-
-                return passwordChars.join('');
-
-            } catch (error) {
-                console.error('Erro em generateHybridPassword:', error);
-                // Tenta retornar algo minimamente útil em caso de erro grave
-                return "ErrorGen";
-            }
-        }
-
-
-        // Generate pronounceable characters using secure random source
-        function generatePronounceableChars(length) {
-            let result = '';
-            // Decide aleatoriamente (de forma segura) se começa com vogal ou consoante
-            let lastWasVowel = getRandomIntSecure(2) === 0;
-
-            for (let i = 0; i < length; i++) {
-                if (lastWasVowel) {
-                    // Seleciona consoante aleatória usando a função segura
-                    result += CONSONANTS[getRandomIntSecure(CONSONANTS.length)];
-                } else {
-                    // Seleciona vogal aleatória usando a função segura
-                    result += VOWELS[getRandomIntSecure(VOWELS.length)];
-                }
-                lastWasVowel = !lastWasVowel; // Alterna para o próximo tipo
-            }
-            return result;
-        }
-
-        // Generate invented word using secure random source
-        function generateInventedWord(minLength = 4, maxLength = 8) {
-            // Determina o comprimento aleatório usando a função segura
+        // Função para gerar uma palavra inventada
+        function generateInventedWord() {
+            const minLength = 3;
+            const maxLength = 8;
             const length = getRandomIntSecure(maxLength - minLength + 1) + minLength;
-            return generatePronounceableChars(length);
-             // NOTA: A estrutura V/C/V/C... reduz a entropia real comparado a letras totalmente aleatórias.
-             // A segurança depende mais do número de palavras e separadores do que da complexidade da palavra individual.
+            
+            let word = '';
+            let useConsonant = getRandomIntSecure(2) === 0; // Começa aleatoriamente com consoante ou vogal
+            
+            for (let i = 0; i < length; i++) {
+                if (useConsonant) {
+                    word += CONSONANTS[getRandomIntSecure(CONSONANTS.length)];
+                } else {
+                    word += VOWELS[getRandomIntSecure(VOWELS.length)];
+                }
+                useConsonant = !useConsonant; // Alterna entre consoante e vogal
+            }
+            
+            return word;
         }
 
-        // Generate invented passphrase using secure random source
+        // Função para gerar senha
+        function generatePassword(silent = false) {
+            let password = '';
+            let entropy = 0;
+            
+            if (state.mode === 'password') {
+                const options = {
+                    length: parseInt(elements.passwordLength?.value || '24'),
+                    useLowercase: elements.useLowercase?.checked || false,
+                    useUppercase: elements.useUppercase?.checked || false,
+                    useNumbers: elements.useNumbers?.checked || false,
+                    useSpecial: elements.useSpecial?.checked || false,
+                    useSpaces: elements.useSpaces?.checked || false,
+                    useUnicode: elements.useUnicode?.checked || false,
+                    excludeAmbiguous: elements.excludeAmbiguous?.checked || false,
+                    atLeastOneOfEach: elements.atLeastOneOfEach?.checked || false
+                };
+                
+                password = generateRandomPassword(options);
+                entropy = calculatePasswordEntropy(password, options);
+            } else {
+                const options = {
+                    wordCount: parseInt(elements.wordCount?.value || '6'),
+                    capitalization: elements.capitalization?.value || 'lowercase',
+                    separator: elements.separator?.value || ' '
+                };
+                
+                password = generateInventedPassphrase(options);
+                entropy = Math.log2(Math.pow(26, 5)) * options.wordCount; // Estimativa simples
+            }
+            
+            // Atualizar UI
+            if (elements.passwordOutput) {
+                elements.passwordOutput.value = password;
+            }
+            
+            updateEntropyDisplay(entropy);
+            
+            if (!silent) {
+                showNotification('Sucesso', 'Nova senha gerada!');
+            }
+        }
+
+        // Função para gerar senha aleatória
+        function generateRandomPassword(options) {
+            let charset = '';
+            
+            if (options.useLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (options.useUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (options.useNumbers) charset += '0123456789';
+            if (options.useSpecial) charset += SPECIAL_CHARS;
+            if (options.useSpaces) charset += ' ';
+            if (options.useUnicode) charset += UNICODE_CHARS;
+            
+            if (options.excludeAmbiguous) {
+                const ambiguousRegex = new RegExp(`[${AMBIGUOUS_CHARS}]`, 'g');
+                charset = charset.replace(ambiguousRegex, '');
+            }
+            
+            if (!charset) {
+                charset = 'abcdefghijklmnopqrstuvwxyz'; // Fallback
+            }
+            
+            let password = '';
+            
+            // Garantir pelo menos um de cada tipo se solicitado
+            if (options.atLeastOneOfEach) {
+                const requiredChars = [];
+                if (options.useLowercase) requiredChars.push('abcdefghijklmnopqrstuvwxyz'[getRandomIntSecure(26)]);
+                if (options.useUppercase) requiredChars.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ'[getRandomIntSecure(26)]);
+                if (options.useNumbers) requiredChars.push('0123456789'[getRandomIntSecure(10)]);
+                if (options.useSpecial) requiredChars.push(SPECIAL_CHARS[getRandomIntSecure(SPECIAL_CHARS.length)]);
+                
+                // Adicionar caracteres obrigatórios
+                for (const char of requiredChars) {
+                    password += char;
+                }
+                
+                // Preencher o resto
+                for (let i = password.length; i < options.length; i++) {
+                    password += charset[getRandomIntSecure(charset.length)];
+                }
+                
+                // Embaralhar a senha
+                const passwordArray = password.split('');
+                shuffleArraySecure(passwordArray);
+                password = passwordArray.join('');
+            } else {
+                // Gerar normalmente
+                for (let i = 0; i < options.length; i++) {
+                    password += charset[getRandomIntSecure(charset.length)];
+                }
+            }
+            
+            return password;
+        }
+
+        // Função para gerar frase secreta inventada
         function generateInventedPassphrase({
             wordCount = 5,
             capitalization = 'lowercase',
@@ -1331,173 +1210,73 @@
         function hidePassword() {
             if (!elements.passwordOutput || !elements.toggleVisibilityBtn) return;
              elements.passwordOutput.type = 'password'; // Tenta mudar o tipo
-             elements.passwordOutput.style.webkitTextSecurity = 'disc'; // Tenta usar discos no Webkit
+             elements.passwordOutput.style.webkitTextSecurity = 'disc'; // Força ocultar o texto no Webkit
              elements.toggleVisibilityBtn.innerHTML = '<i class="fas fa-eye"></i>';
              state.passwordVisible = false;
         }
 
-
-         // Gera senha ou frase secreta com base no modo atual
-        function generatePassword(silence = false) {
-             let password = '';
-             let entropy = 0;
-             let description = '';
-
-             try {
-                 if (state.mode === 'password') {
-                     const options = {
-                         length: parseInt(elements.lengthValue?.value || 16),
-                         useUppercase: elements.useUppercase?.checked ?? true,
-                         useLowercase: elements.useLowercase?.checked ?? true,
-                         useNumbers: elements.useNumbers?.checked ?? true,
-                         useSpecial: elements.useSpecial?.checked ?? true,
-                         useSpaces: elements.useSpaces?.checked ?? false,
-                         useUnicode: elements.useUnicode?.checked ?? false,
-                         atLeastOneOfEach: elements.atLeastOneOfEach?.checked ?? true,
-                         excludeAmbiguous: elements.excludeAmbiguous?.checked ?? true
-                     };
-                     password = generateHybridPassword(options);
-                     entropy = calculatePasswordEntropy(password, options); // Usa a função de cálculo com penalidades
-                     description = getEntropyDescription(entropy);
-
-                 } else { // modo 'passphrase'
-                     const options = {
-                         wordCount: parseInt(elements.wordCountValue?.value || 5),
-                         capitalization: elements.capitalization?.value || 'lowercase',
-                         separator: elements.separator?.value !== undefined ? elements.separator.value : '-'
-                     };
-                     password = generateInventedPassphrase(options);
-                     // --- CORREÇÃO: Cálculo de Entropia para Frase Secreta Inventada ---
-                     // Estimativa baseada no número de palavras e na entropia média por palavra inventada.
-                     // Cada palavra (4-8 chars, CVCV...) tem ~55 milhões de possibilidades. log2(55,164,690) ≈ 25.7 bits.
-                     const BITS_PER_INVENTED_WORD = 25.7;
-                     entropy = BITS_PER_INVENTED_WORD * options.wordCount;
-                     description = getEntropyDescription(entropy); // Usando a mesma escala por simplicidade
-                 }
-
-                 // Atualizar exibição
-                 if (elements.passwordOutput) {
-                    elements.passwordOutput.value = password;
-                    // Garante que a senha recém-gerada respeite o estado de visibilidade atual
-                    if (state.passwordVisible) {
-                        showPassword();
-                    } else {
-                        hidePassword();
-                    }
-                 }
-                 updateEntropyDisplay(entropy, description);
-
-                 // Mostrar notificação (apenas se não for silencioso)
-                 if (!silence) {
-                     showNotification('Sucesso', `${state.mode === 'password' ? 'Senha' : 'Frase secreta'} gerada!`, 'success');
-                 }
-             } catch (error) {
-                 console.error("Erro ao gerar senha/frase:", error);
-                 showNotification('Erro', 'Ocorreu um erro na geração.', 'danger');
-                 if (elements.passwordOutput) elements.passwordOutput.value = "Erro!";
-                 updateEntropyDisplay(0, "Erro na geração");
-             }
+        function animateCopyButton(button) {
+            if (!button) return;
+            button.classList.add('copied');
+            setTimeout(() => {
+                button.classList.remove('copied');
+            }, 1000);
         }
 
-        function updateEntropyDisplay(entropy, description) {
+        function updateEntropyDisplay(entropy) {
             if (!elements.entropyBar || !elements.entropyValue || !elements.entropyDescription) return;
-
+            
+            // Atualizar valor
+            elements.entropyValue.textContent = `Entropia: ${Math.round(entropy)} bits`;
+            
+            // Atualizar descrição
+            elements.entropyDescription.textContent = getEntropyDescription(entropy);
+            
             // Atualizar barra de progresso
-             // Usar 128 bits como referência para 100% (segurança excelente)
-            const maxEntropyReference = 128;
-            const percentage = Math.min(100, Math.max(0, (entropy / maxEntropyReference) * 100));
-
+            const percentage = Math.min(100, (entropy / 128) * 100);
             elements.entropyBar.style.width = `${percentage}%`;
-
-            // Atualizar cor da barra baseada na entropia
-             let barClass = 'bg-danger'; // Muito Fraca
-            if (entropy >= 100) barClass = 'bg-success'; // Forte / Muito Forte / Excelente
-            else if (entropy >= 80) barClass = 'bg-primary'; // Moderada para Forte
-            else if (entropy >= 60) barClass = 'bg-info'; // Fraca para Moderada
-            else if (entropy >= 40) barClass = 'bg-warning'; // Muito Fraca para Fraca
-
-            elements.entropyBar.className = `progress-bar ${barClass}`;
-
-            // Atualizar texto
-            elements.entropyValue.textContent = `Entropia: ${entropy.toFixed(1)} bits`;
-            elements.entropyDescription.textContent = description;
+            
+            // Cores baseadas na força
+            let colorClass = 'bg-danger';
+            if (entropy >= 100) colorClass = 'bg-success';
+            else if (entropy >= 80) colorClass = 'bg-warning';
+            else if (entropy >= 60) colorClass = 'bg-info';
+            
+            elements.entropyBar.className = `progress-bar ${colorClass}`;
         }
 
-        // Tipos de notificação: success, info, warning, danger (correspondem às classes do Bootstrap)
-        function showNotification(title, message, type = 'info') {
-             if (!bootstrapToast || !elements.toastTitle || !elements.toastMessage) return;
-
-             // Mapeia tipo para classe de ícone/cor se necessário
-             let iconClass = 'fas fa-info-circle';
-             let textClass = 'text-primary'; // Cor padrão para info
-             switch (type) {
-                case 'success': iconClass = 'fas fa-check-circle'; textClass = 'text-success'; break;
-                case 'warning': iconClass = 'fas fa-exclamation-triangle'; textClass = 'text-warning'; break;
-                case 'danger': iconClass = 'fas fa-times-circle'; textClass = 'text-danger'; break;
-                // case 'info': // padrão
-            }
-
-            // Atualiza o cabeçalho do toast
-            const toastHeaderIcon = elements.notificationToast.querySelector('.toast-header i');
-            if(toastHeaderIcon) {
-                toastHeaderIcon.className = `${iconClass} me-2 ${textClass}`;
-            }
+        function showNotification(title, message, type = 'success') {
+            if (!elements.toastTitle || !elements.toastMessage || !bootstrapToast) return;
+            
             elements.toastTitle.textContent = title;
-
-            // Atualiza corpo do toast
             elements.toastMessage.textContent = message;
-
-            // Mostra o toast
+            
+            // Adicionar ícone baseado no tipo
+            let icon = 'fas fa-check-circle';
+            if (type === 'warning') icon = 'fas fa-exclamation-triangle';
+            else if (type === 'danger') icon = 'fas fa-times-circle';
+            else if (type === 'info') icon = 'fas fa-info-circle';
+            
+            elements.toastTitle.innerHTML = `<i class="${icon} me-2"></i>${title}`;
+            
             bootstrapToast.show();
         }
 
-
-        function animateCopyButton(btn) {
-            if (!btn) return; // Garante que o botão existe
-
-            // 1. Limpa classes de animação anteriores (caso haja cliques rápidos)
-            //    e garante que 'btn-success' não esteja presente.
-            btn.classList.remove('btn-success', 'text-success');
-
-            // 2. Adiciona APENAS a classe para deixar o ÍCONE verde.
-            btn.classList.add('text-success');
-
-            // 3. Mudar o ícone para um check temporariamente
-            const icon = btn.querySelector('i');
-            const originalIconClass = icon ? icon.className : 'fas fa-copy'; // Guarda o ícone original
-            if (icon) {
-                 icon.className = 'fas fa-check text-success'; // Muda para check e garante a cor verde no ícone
-            }
-
-            // 4. Reverte após um tempo
-            setTimeout(() => {
-                // Remove apenas a classe de cor do texto/ícone
-                btn.classList.remove('text-success');
-                // Restaura o ícone original
-                if (icon) {
-                     icon.className = originalIconClass;
-                 }
-            }, 1500); // Mantém a duração de 1.5 segundos
-        }
-    </script>
-
-    <!-- PWA Service Worker Registration -->
-    <script>
-        // Registra o Service Worker para funcionalidade PWA
+        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
                     .then((registration) => {
                         console.log('Service Worker registrado com sucesso:', registration.scope);
                         
-                        // Verifica se há atualizações
+                        // Verificar atualizações
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
                             newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    // Nova versão disponível
-                                    if (confirm('Nova versão disponível! Deseja atualizar?')) {
-                                        window.location.reload();
+                                if (newWorker.state === 'installed') {
+                                    if (navigator.serviceWorker.controller) {
+                                        // Nova versão disponível
+                                        showNotification('Atualização', 'Nova versão disponível. Recarregue a página.', 'info');
                                     }
                                 }
                             });
@@ -1587,3 +1366,4 @@
     </script>
 </body>
 </html>
+

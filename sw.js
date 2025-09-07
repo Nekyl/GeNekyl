@@ -5,7 +5,6 @@ const STATIC_CACHE_NAME = 'gerador-senhas-static-v1.0.0';
 const STATIC_ASSETS = [
   './',
   './index.html',
-  './Gerador.html',
   './manifest.json',
   // CDN resources que serão cacheados quando acessados
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css',
@@ -13,18 +12,10 @@ const STATIC_ASSETS = [
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js'
 ];
 
-// Recursos opcionais (ícones, screenshots)
+// Recursos opcionais (ícones que podem não existir)
 const OPTIONAL_ASSETS = [
-  './icons/icon-72x72.png',
-  './icons/icon-96x96.png',
-  './icons/icon-128x128.png',
-  './icons/icon-144x144.png',
-  './icons/icon-152x152.png',
   './icons/icon-192x192.png',
-  './icons/icon-384x384.png',
-  './icons/icon-512x512.png',
-  './screenshots/desktop-screenshot.png',
-  './screenshots/mobile-screenshot.png'
+  './icons/icon-512x512.png'
 ];
 
 // Evento de instalação do Service Worker

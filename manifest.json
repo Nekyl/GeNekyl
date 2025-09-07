@@ -24,22 +24,6 @@
       "purpose": "maskable any"
     }
   ],
-  "screenshots": [
-    {
-      "src": "screenshots/desktop-screenshot.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Gerador de Senhas - Versão Desktop"
-    },
-    {
-      "src": "screenshots/mobile-screenshot.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Gerador de Senhas - Versão Mobile"
-    }
-  ],
   "shortcuts": [
     {
       "name": "Gerar Senha",
@@ -48,8 +32,8 @@
       "url": "./?mode=password",
       "icons": [
         {
-          "src": "icons/icon-96x96.png",
-          "sizes": "96x96"
+          "src": "icons/icon-192x192.png",
+          "sizes": "192x192"
         }
       ]
     },
@@ -60,8 +44,8 @@
       "url": "./?mode=passphrase",
       "icons": [
         {
-          "src": "icons/icon-96x96.png",
-          "sizes": "96x96"
+          "src": "icons/icon-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }
