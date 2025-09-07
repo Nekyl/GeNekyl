@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas Seguras</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Crie senhas e frases secretas fortes e seguras localmente no seu navegador">
+    <meta name="theme-color" content="#121212">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GeradorSenhas">
+    <meta name="msapplication-TileColor" content="#6b57ff">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+    
+    <!-- Bootstrap CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        /* Base styling */
+        :root {
+            --primary: #6b57ff;
+            --primary-dark: #5040c9;
+            --secondary: #45caff;
+            --success: #2cd4a0;
+            --danger: #ff6b8e;
+            --warning: #ffbe45;
+            --dark: #121212;
+            --dark-subtle: #1f1f1f;
+            --darker: #2a2a2a;
+            --light: #efefef;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        /* Card styling */
+        .card {
+            background-color: var(--dark-subtle);
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .bg-darker {
+            background-color: var(--darker) !important;
+        }
+
+        .bg-dark-subtle {
+            background-color: var(--dark-subtle) !important;
+        }
+
+        /* Form styling */
+        .form-control, .form-select {
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(107, 87, 255, 0.25);
+            background-color: rgba(42, 42, 42, 0.8);
+        }
+
+        .input-group .btn {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        /* Range and number input */
+        .form-range {
+            width: 100%;
+            height: 1.5rem;
+            padding: 0;
+            -webkit-appearance: none;
+            background-color: transparent;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background-color: var(--primary);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: -0.5rem;
+        }
+
+        .form-range::-webkit-slider-thumb:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .form-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 0.25rem;
+            background-color: var(--darker);
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+
+        /* Switch toggle styling */
+        .form-check-input {
+            background-color: var(--darker);
+            border-color: var(--darker);
+            width: 3rem;
+            height: 1.5rem;
+            margin-top: 0.125rem;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .form-check-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(107, 87, 255, 0.25);
+        }
+
+        .form-switch .form-check-input {
+            border-radius: 1.5rem;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 0.25rem rgba(107, 87, 255, 0.25);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #25b889;
+            border-color: #25b889;
+        }
+
+        .nav-pills .nav-link {
+            color: var(--light);
+            border-radius: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary);
+        }
+
+        .nav-pills .nav-link:not(.active):hover {
+            background-color: var(--darker);
+        }
+
+        /* Password output field */
+        .password-display-container {
+            display: flex;
+            align-items: stretch;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .password-field-wrapper {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        #passwordOutput {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            letter-spacing: 0.1rem;
+            border-radius: 0.5rem;
+            resize: none;
+            overflow-y: auto;
+            max-height: 150px;
+            min-height: 100px;
+            padding: 1rem 3rem 1rem 1rem;
+            line-height: 1.5;
+            color: #8cff8c;
+            width: 100%;
+        }
+
+        .password-actions {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .toggle-visibility-btn {
+            background: none;
+            border: none;
+            color: var(--light);
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-visibility-btn:hover {
+            color: var(--primary);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .copy-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        .copy-btn.copied {
+            background: transparent !important;
+            color: #2cd4a0 !important;
+            transform: scale(1.2);
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        /* Entropy information */
+        .entropy-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            opacity: 0.9;
+        }
+
+        .entropy-meter {
+            width: 60%;
+        }
+
+        .entropy-meter small,
+        .entropy-description {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            color: var(--light);
+            opacity: 0.9;
+        }
+
+        .progress {
+            height: 0.5rem;
+            border-radius: 1rem;
+            margin-bottom: 0.25rem;
+            background-color: var(--darker);
+        }
+
+        .progress-bar {
+            border-radius: 1rem;
+            transition: var(--transition);
+        }
+
+        /* Toast notification */
+        .toast {
+            background-color: var(--dark-subtle);
+            color: var(--light);
+            border-radius: 0.5rem;
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+            margin-top: 1rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.showing {
+            opacity: 1;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.hide {
+            opacity: 0;
+        }
+
+        .toast-header {
+            background-color: var(--dark-subtle);
+            color: var(--light);
+            border-bottom: 1px solid var(--darker);
+            padding: 0.75rem 1rem;
+        }
+
+        .toast-body {
+            padding: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .password-display-container {
+                position: relative;
+            }
+
+            .password-actions {
+                position: absolute;
+                right: 0.5rem;
+                top: 50%;
+                transform: translateY(-50%);
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+            }
+
+            #passwordOutput {
+                padding-right: 5rem;
+            }
+
+            .copy-btn {
+                width: 100%;
+                min-height: 2.5rem;
+            }
+
+            .entropy-info {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .entropy-meter {
+                width: 100%;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            #passwordOutput {
+                font-size: 1rem;
+                letter-spacing: 0.05rem;
+            }
+
+            .form-check-label {
+                font-size: 0.9rem;
+            }
+
+            .toast {
+                width: 90%;
+                margin: 0.5rem auto;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Hover effects */
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Size display input styling */
+        .size-display-input {
+            background-color: transparent;
+            border: none;
+            color: var(--light);
+            width: 50px;
+            text-align: right;
+            font-weight: 500;
+            padding: 0;
+            -moz-appearance: textfield;
+        }
+
+        .size-display-input::-webkit-outer-spin-button,
+        .size-display-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .size-display-input:focus {
+            outline: none;
+            color: var(--primary);
+        }
+
+        /* Mobile specific styles */
+        @media (max-width: 768px) {
+            #generateBtnMobile {
+                margin: 1rem 0;
+                padding: 0.8rem;
+                font-size: 1.1rem;
+            }
+
+            .password-display-container {
+                margin-bottom: 0.5rem;
+            }
+
+            #passwordOutput {
+                font-size: 1rem;
+                min-height: 80px;
+                padding-right: 3.5rem;
+            }
+
+            .form-check-label {
+                font-size: 0.9rem;
+            }
+
+            .size-display-input {
+                font-size: 1.1rem;
+                width: 40px;
+            }
+        }
+
+
+    </style>
+</head>
+
+<body class="bg-dark text-light">
+    <div class="container py-4 d-flex flex-column" style="min-height: 100vh;">
+        <header class="text-center mb-5">
+            <h1 class="display-4 fw-bold"><i class="fas fa-shield-alt text-primary me-2"></i>Gerador de Senhas</h1>
+            <p class="lead">Crie senhas e frases secretas fortes e seguras.</p>
+        </header>
+
+        <!-- Notificação Toast -->
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+            <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="fas fa-bell me-2 text-primary"></i>
+                    <strong class="me-auto" id="toastTitle">Notificação</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toastMessage">
+                    Senha gerada com sucesso.
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center flex-grow-1">
+            <div class="col-lg-8">
+                <div class="card bg-dark-subtle text-light border-0 shadow-lg">
+                    <div class="card-header bg-dark-subtle border-0">
+                        <!-- Abas de Modo -->
+                        <ul class="nav nav-pills nav-fill" id="modeTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="password-tab" data-bs-toggle="pill" data-bs-target="#password-panel" type="button" role="tab" aria-controls="password-panel" aria-selected="true">
+                                    <i class="fas fa-key me-2"></i>Senha
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="passphrase-tab" data-bs-toggle="pill" data-bs-target="#passphrase-panel" type="button" role="tab" aria-controls="passphrase-panel" aria-selected="false">
+                                    <i class="fas fa-quote-right me-2"></i>Frase Secreta
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <!-- Área de Exibição da Senha -->
+                        <div class="mb-4">
+                            <div class="password-display-container">
+                                <div class="password-field-wrapper">
+                                     <!-- Usando textarea, mas controlando o tipo via JS -->
+                                    <textarea class="form-control bg-darker text-light" id="passwordOutput" readonly rows="3"></textarea>
+                                    <div class="password-actions">
+                                        <button class="toggle-visibility-btn" type="button" id="toggleVisibilityBtn" title="Mostrar/Ocultar Senha">
+                                            <i class="fas fa-eye"></i> <!-- Ícone inicial -->
+                                        </button>
+                                        <button class="copy-btn" type="button" id="copyBtn" title="Copiar para Área de Transferência">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="entropy-info">
+                                <div class="entropy-meter">
+                                    <div class="progress">
+                                        <div class="progress-bar" id="entropyBar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small id="entropyValue">Entropia: 0 bit</small>
+                                </div>
+                                <div class="entropy-description" id="entropyDescription"></div>
+                            </div>
+                        </div>
+
+                        <!-- Conteúdo das Abas -->
+                        <div class="tab-content" id="generateTabContent">
+                            <!-- Painel de Senha -->
+                            <div class="tab-pane fade show active" id="password-panel" role="tabpanel" aria-labelledby="password-tab">
+                                <!-- Comprimento -->
+                                <div class="mb-3">
+                                    <label for="passwordLength" class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Tamanho da Senha</span>
+                                        <input type="number" class="size-display-input" id="lengthValue" min="8" max="128" value="24"> <!-- Aumentei o max para 128 -->
+                                    </label>
+                                    <input type="range" class="form-range" id="passwordLength" min="8" max="128" value="24"> <!-- Aumentei o max para 128 -->
+                                </div>
+
+                                <!-- Botão Gerar (visível apenas em mobile) -->
+                                <div class="d-md-none mb-3">
+                                    <button class="btn btn-primary btn-lg w-100" id="generateBtnMobile">
+                                        <i class="fas fa-sync-alt me-2"></i>Gerar
+                                    </button>
+                                </div>
+
+                                <!-- Tipos de Caracteres -->
+                                <div class="mb-3">
+                                    <label class="form-label">Tipos de Caracteres</label>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useLowercase" checked>
+                                                <label class="form-check-label" for="useLowercase">Minúsculas (a-z)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useUppercase" checked>
+                                                <label class="form-check-label" for="useUppercase">Maiúsculas (A-Z)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useNumbers" checked>
+                                                <label class="form-check-label" for="useNumbers">Números (0-9)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useSpecial" checked>
+                                                <label class="form-check-label" for="useSpecial">Especiais (!@#$%^&*...)</label> <!-- Texto mais genérico -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useSpaces">
+                                                <label class="form-check-label" for="useSpaces">Espaços</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useUnicode"> <!-- Removido o checked padrão -->
+                                                <label class="form-check-label" for="useUnicode">Unicode (Complexos)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <!-- Opções adicionadas que estavam faltando no HTML -->
+                                     <div class="row mt-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="excludeAmbiguous" checked>
+                                                <label class="form-check-label" for="excludeAmbiguous">Excluir Ambíguos (Il1O0...)</label>
+                                            </div>
+                                        </div>
+                                         <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="atLeastOneOfEach" checked>
+                                                <label class="form-check-label" for="atLeastOneOfEach">Garantir um de cada tipo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Botão Gerar (visível apenas em desktop) -->
+                                <div class="d-none d-md-block">
+                                    <div class="d-grid gap-2 mt-4">
+                                        <button class="btn btn-primary btn-lg" id="generateBtn">
+                                            <i class="fas fa-sync-alt me-2"></i>Gerar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Painel de Frase Secreta -->
+                            <div class="tab-pane fade" id="passphrase-panel" role="tabpanel" aria-labelledby="passphrase-tab">
+                                <!-- Número de Palavras -->
+                                <div class="mb-3">
+                                    <label for="wordCount" class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Número de Palavras</span>
+                                        <input type="number" class="size-display-input" id="wordCountValue" min="3" max="22" value="6"> <!-- Valor padrão ajustado -->
+                                    </label>
+                                    <input type="range" class="form-range" id="wordCount" min="3" max="22" value="6"> <!-- Valor padrão ajustado -->
+                                </div>
+
+                                <!-- Botão Gerar (visível apenas em mobile) -->
+                                <div class="d-md-none mb-3">
+                                    <button class="btn btn-primary btn-lg w-100" id="generatePassphraseBtnMobile">
+                                        <i class="fas fa-sync-alt me-2"></i>Gerar
+                                    </button>
+                                </div>
+
+                                <!-- Capitalização -->
+                                <div class="mb-3">
+                                    <label for="capitalization" class="form-label">Capitalização</label>
+                                    <select class="form-select bg-darker text-light" id="capitalization">
+                                        <option value="lowercase" selected>minúsculas</option>
+                                        <option value="uppercase">MAIÚSCULAS</option>
+                                        <option value="title">Capitalização De Título</option>
+                                    </select>
+                                </div>
+
+                                <!-- Separador -->
+                                <div class="mb-3">
+                                    <label for="separator" class="form-label">Separador de Palavras</label>
+                                    <select class="form-select bg-darker text-light" id="separator">
+                                        <option value="-">Hífen (-)</option>
+                                        <option value=".">Ponto (.)</option>
+                                        <option value=" " selected>Espaço ( )</option>
+                                        <option value="_">Sublinhado (_)</option>
+                                        <option value="">Nenhum</option>
+                                        <option value=",">Vírgula (,)</option>
+                                        <option value="!">Exclamação (!)</option>
+                                        <option value="@">Arroba (@)</option>
+                                        <option value="#">Jogo da Velha (#)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Botão Gerar (visível apenas em desktop) -->
+                                <div class="d-none d-md-block">
+                                    <div class="d-grid gap-2 mt-4">
+                                        <button class="btn btn-primary btn-lg" id="generatePhraseBtn">
+                                            <i class="fas fa-sync-alt me-2"></i>Gerar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="mt-5 border-top border-secondary pt-4 text-center px-4">  
+            <p class="mb-2 text-light">  
+                <span class="d-md-inline-flex align-items-center gap-1">  
+                    <span class="text-warning">🔐</span>  
+                    Esta ferramenta gera senhas e frases secretas  
+                    <span class="text-white fw-medium">localmente no seu navegador</span>.  
+                </span>  
+            </p>  
+            <p class="text-light opacity-75"><small>Nenhuma informação sensível é armazenada ou enviada pela internet.</small></p>
+                    <div class="mt-4 pt-3 border-top border-dark">
+            <a href="https://github.com/nekyl/GeNekyl/issues" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="link-light text-decoration-none d-flex justify-content-center align-items-center gap-2">
+        
+                <p class="mb-0 text-light opacity-75">
+                    <small>Achou útil? Deixe seu feedback, contribua ou reporte um problema</small>
+                </p>
+        
+                <i class="fab fa-github fs-4"></i>
+            </a>
+        </div>
+    </footer> 
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Inline JavaScript -->
+    <script>
+
+        /**
+         * Gera um número inteiro aleatório criptograficamente seguro entre 0 (inclusivo) e max (exclusivo).
+         * Substitui Math.random() para fins de segurança.
+         * @param {number} max O limite superior exclusivo.
+         * @returns {number} Um número inteiro aleatório seguro.
+         */
+        function getRandomIntSecure(max) {
+            if (max <= 0 || !Number.isInteger(max)) {
+                console.error("getRandomIntSecure: max deve ser um inteiro positivo.");
+                return 0; // Retorna um valor padrão em caso de erro
+            }
+            // Cria um array para guardar um número aleatório de 32 bits
+            const randomBuffer = new Uint32Array(1);
+            // Preenche o buffer com um valor aleatório seguro
+            window.crypto.getRandomValues(randomBuffer);
+            // Calcula o número aleatório no intervalo [0, max)
+            // randomBuffer[0] / (0xFFFFFFFF + 1) gera um float entre 0 (inclusivo) e 1 (exclusivo)
+            return Math.floor((randomBuffer[0] / (0xFFFFFFFF + 1)) * max);
+        }
+
+        /**
+         * Embaralha um array no local usando o algoritmo Fisher-Yates com fonte de aleatoriedade segura.
+         * @param {Array} array O array a ser embaralhado.
+         */
+        function shuffleArraySecure(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                // Usa a função segura para obter o índice j
+                const j = getRandomIntSecure(i + 1);
+                // Troca os elementos array[i] e array[j]
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+
+        // Constants
+        const CONSONANTS = 'bcdfghjklmnpqrstvwxyz';
+        const VOWELS = 'aeiou';
+        // Conjunto expandido de caracteres especiais comuns
+        const SPECIAL_CHARS = '!@#$%^&*()-_=+[]{}\\|;:\'",.<>/?~`';
+        // Conjunto de caracteres ambíguos comuns
+        const AMBIGUOUS_CHARS = 'Il1O0S5B8G6Z2';
+        const UNICODE_CHARS = '°±µ¶§©®™¥€£¢¤¦¨«»←→↑↓⇒⇔∀∃∈∉∋∑∞∨∧∩∪∴∵∼≈≠≤≥⊂⊃⊆⊇⊕⊗⊥⋅⌈⌉⌊⌋⌠⌡〈〉♠♣♥♦★✓✗✘⚠⛔';
+
+        // Keyboard patterns for detection (mantidos conforme original)
+        const KEYBOARD_PATTERNS = [
+            'qwert', 'asdfg', 'zxcvb', 'yuiop', 'hjkl', 'nm',  // Horizontal
+            'qaz', 'wsx', 'edc', 'rfv', 'tgb', 'yhn', 'ujm', 'ik', 'ol', 'p',  // Vertical
+            '1234567890',  // Sequential numbers
+            'qwertyuiop', 'asdfghjkl', 'zxcvbnm'  // Complete lines
+        ];
+
+        // Calculate Shannon entropy (mantido conforme original)
+        function calculateShannonEntropy(text) {
+            if (!text) return 0;
+            const freq = {};
+            for (const c of text) {
+                freq[c] = (freq[c] || 0) + 1;
+            }
+            let entropy = 0;
+            const length = text.length;
+            for (const count of Object.values(freq)) {
+                const probability = count / length;
+                if (probability > 0) { // Evitar log2(0)
+                   entropy -= probability * Math.log2(probability);
+                }
+            }
+            return entropy * length; // Retorna a entropia total da string
+        }
+
+        function checkSequences(text) {
+            const textLower = text.toLowerCase();
+            let penalty = 0;
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+            const digits = '0123456789';
+            for (let i = 0; i < text.length - 2; i++) {
+                const chunk = textLower.slice(i, i + 3);
+                if (alphabet.includes(chunk) || digits.includes(chunk)) penalty += 0.1;
+                if (alphabet.includes(chunk.split('').reverse().join('')) || digits.includes(chunk.split('').reverse().join(''))) {
+                    penalty += 0.1;
+                }
+            }
+            return Math.min(penalty, 1.0);
+        }
+
+        function checkKeyboardPatterns(text) {
+            const textLower = text.toLowerCase();
+            let penalty = 0;
+            for (const pattern of KEYBOARD_PATTERNS) {
+                if (textLower.includes(pattern) || textLower.includes(pattern.split('').reverse().join(''))) {
+                     penalty += 0.2;
+                }
+            }
+            return Math.min(penalty, 1.0);
+        }
+
+        function checkPatternRepetition(text) {
+            let penalty = 0;
+            const textLen = text.length;
+            for (let patternLen = 2; patternLen < Math.min(6, Math.floor(textLen / 2)); patternLen++) {
+                for (let i = 0; i <= textLen - 2 * patternLen; i++) {
+                    const pattern = text.slice(i, i + patternLen);
+                    const restOfString = text.slice(i + patternLen);
+                     // Escape regex special characters
+                    const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    if (restOfString.match(new RegExp(escapedPattern))) {
+                        penalty += 0.1 * patternLen; // Penalidade maior para padrões mais longos
+                    }
+                }
+            }
+            return Math.min(penalty, 1.0);
+        }
+
+
+        function analyzeCharDistribution(text) {
+             if (!text || text.length < 4) return 0; // Precisa de comprimento mínimo para analisar distribuição
+
+            const length = text.length;
+            const counts = {
+                lower: (text.match(/[a-z]/g) || []).length,
+                upper: (text.match(/[A-Z]/g) || []).length,
+                digit: (text.match(/[0-9]/g) || []).length,
+                special: (text.match(/[^a-zA-Z0-9\s]/g) || []).length, // Exclui espaço da contagem especial aqui
+                space: (text.match(/ /g) || []).length // Contagem separada para espaços
+            };
+
+            const numTypesUsed = Object.values(counts).filter(count => count > 0).length;
+            if (numTypesUsed <= 1) return 0; // Pouca ou nenhuma mistura
+
+            // Calculate ideal distribution based on the number of types ACTUALLY used
+            const idealRatio = 1.0 / numTypesUsed;
+            let totalDeviation = 0;
+
+            for(const type in counts){
+                 if(counts[type] > 0){
+                     const ratio = counts[type] / length;
+                     totalDeviation += Math.abs(ratio - idealRatio);
+                 }
+            }
+
+            // A média do desvio absoluto; quanto menor, melhor a distribuição
+            // Normaliza para um valor entre 0 e 1 (0 = desvio máximo, 1 = distribuição perfeita)
+            // O fator 2 ajusta a escala, pois cada desvio é contado duas vezes (um tipo tem a mais, outro a menos)
+             const distributionScore = Math.max(0, 1 - (totalDeviation / (2 * (1 - idealRatio))));
+
+            // Bônus baseado na pontuação de distribuição (até 15% da entropia base)
+             const bonus = distributionScore * 0.15;
+             return bonus; // Retorna o fator de bônus (não a entropia diretamente)
+        }
+
+        // Generate hybrid password using secure random source
+        function generateHybridPassword({
+            length = 16,
+            useUppercase = true,
+            useLowercase = true,
+            useNumbers = true,
+            useSpecial = true,
+            useSpaces = false,
+            useUnicode = false, // Alterado padrão para false, pois Unicode pode causar problemas
+            atLeastOneOfEach = true,
+            excludeAmbiguous = true
+        } = {}) {
+            try {
+                let masterCharsPool = ''; // Pool completo para preenchimento
+                const requiredChars = []; // Array para garantir um de cada tipo selecionado
+
+                // --- Construir Pools e Caracteres Requeridos ---
+                let lowercasePool = 'abcdefghijklmnopqrstuvwxyz';
+                let uppercasePool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                let numbersPool = '0123456789';
+                let specialPool = SPECIAL_CHARS;
+                let unicodePool = UNICODE_CHARS;
+                let spacePool = ' ';
+
+                if (excludeAmbiguous) {
+                    const ambiguousRegex = new RegExp(`[${AMBIGUOUS_CHARS}]`, 'g');
+                    lowercasePool = lowercasePool.replace(ambiguousRegex, '');
+                    uppercasePool = uppercasePool.replace(ambiguousRegex, '');
+                    numbersPool = numbersPool.replace(ambiguousRegex, '');
+                    // Não remover ambíguos de especiais, unicode ou espaços (pode não fazer sentido)
+                }
+
+                if (useLowercase && lowercasePool) {
+                    masterCharsPool += lowercasePool;
+                    if (atLeastOneOfEach) requiredChars.push(lowercasePool[getRandomIntSecure(lowercasePool.length)]);
+                }
+                if (useUppercase && uppercasePool) {
+                    masterCharsPool += uppercasePool;
+                    if (atLeastOneOfEach) requiredChars.push(uppercasePool[getRandomIntSecure(uppercasePool.length)]);
+                }
+                if (useNumbers && numbersPool) {
+                    masterCharsPool += numbersPool;
+                    if (atLeastOneOfEach) requiredChars.push(numbersPool[getRandomIntSecure(numbersPool.length)]);
+                }
+                if (useSpecial && specialPool) {
+                    masterCharsPool += specialPool;
+                    if (atLeastOneOfEach) requiredChars.push(specialPool[getRandomIntSecure(specialPool.length)]);
+                }
+                if (useSpaces && spacePool) {
+                    masterCharsPool += spacePool;
+                    if (atLeastOneOfEach) requiredChars.push(spacePool); // Só há 1 opção
+                }
+                 if (useUnicode && unicodePool) {
+                    masterCharsPool += unicodePool;
+                    if (atLeastOneOfEach) requiredChars.push(unicodePool[getRandomIntSecure(unicodePool.length)]);
+                }
+
+                if (!masterCharsPool) {
+                    // Tenta usar minúsculas como fallback se nada for selecionado
+                    masterCharsPool = 'abcdefghijklmnopqrstuvwxyz';
+                     console.warn('Nenhum tipo de caractere selecionado ou pools vazios. Usando minúsculas como fallback.');
+                     // Não adiciona aos requiredChars neste caso de fallback
+                     atLeastOneOfEach = false; // Desativa a garantia se caímos no fallback
+                }
+
+                const passwordChars = [];
+
+                 // Adicionar caracteres requeridos primeiro (se houver)
+                if (atLeastOneOfEach) {
+                    // Garante que não temos mais caracteres requeridos do que o comprimento da senha
+                    const numRequired = Math.min(requiredChars.length, length);
+                    // Embaralha os requeridos para não aparecerem sempre na mesma ordem
+                    shuffleArraySecure(requiredChars);
+                    for(let i = 0; i < numRequired; i++) {
+                        passwordChars.push(requiredChars[i]);
+                    }
+                }
+
+                // --- Gerar Caracteres Restantes ---
+                const remainingLength = length - passwordChars.length;
+                if (remainingLength > 0 && masterCharsPool) {
+                    for (let i = 0; i < remainingLength; i++) {
+                        // Seleciona aleatoriamente do pool mestre usando a função segura
+                        passwordChars.push(masterCharsPool[getRandomIntSecure(masterCharsPool.length)]);
+                    }
+                } else if (remainingLength < 0) {
+                     // Se requiredChars era maior que length, truncamos
+                     passwordChars.length = length;
+                }
+
+
+                // --- Embaralhar o Resultado Final ---
+                // Embaralha todos os caracteres na senha final para misturar os requeridos com os aleatórios
+                shuffleArraySecure(passwordChars);
+
+                return passwordChars.join('');
+
+            } catch (error) {
+                console.error('Erro em generateHybridPassword:', error);
+                // Tenta retornar algo minimamente útil em caso de erro grave
+                return "ErrorGen";
+            }
+        }
+
+
+        // Generate pronounceable characters using secure random source
+        function generatePronounceableChars(length) {
+            let result = '';
+            // Decide aleatoriamente (de forma segura) se começa com vogal ou consoante
+            let lastWasVowel = getRandomIntSecure(2) === 0;
+
+            for (let i = 0; i < length; i++) {
+                if (lastWasVowel) {
+                    // Seleciona consoante aleatória usando a função segura
+                    result += CONSONANTS[getRandomIntSecure(CONSONANTS.length)];
+                } else {
+                    // Seleciona vogal aleatória usando a função segura
+                    result += VOWELS[getRandomIntSecure(VOWELS.length)];
+                }
+                lastWasVowel = !lastWasVowel; // Alterna para o próximo tipo
+            }
+            return result;
+        }
+
+        // Generate invented word using secure random source
+        function generateInventedWord(minLength = 4, maxLength = 8) {
+            // Determina o comprimento aleatório usando a função segura
+            const length = getRandomIntSecure(maxLength - minLength + 1) + minLength;
+            return generatePronounceableChars(length);
+             // NOTA: A estrutura V/C/V/C... reduz a entropia real comparado a letras totalmente aleatórias.
+             // A segurança depende mais do número de palavras e separadores do que da complexidade da palavra individual.
+        }
+
+        // Generate invented passphrase using secure random source
+        function generateInventedPassphrase({
+            wordCount = 5,
+            capitalization = 'lowercase',
+            separator = '-'
+        } = {}) {
+            const words = [];
+            for (let i = 0; i < wordCount; i++) {
+                let word = generateInventedWord(); // Esta função agora usa getRandomIntSecure internamente
+
+                switch (capitalization) {
+                    case 'uppercase':
+                        word = word.toUpperCase();
+                        break;
+                    case 'title':
+                        word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                        break;
+                    // case 'lowercase': // é o padrão
+                    default:
+                        word = word.toLowerCase();
+                }
+                words.push(word);
+            }
+            return words.join(separator);
+        }
+
+       // Calcula a entropia estimada da senha, aplicando bônus e penalidades.
+        // NOTA: Para senhas geradas aleatoriamente com um CSPRNG, a entropia
+        // teórica (log2(N) * L) é geralmente a métrica mais relevante.
+        // As penalidades/bônus são mais úteis para avaliar senhas criadas por humanos.
+        function calculatePasswordEntropy(password, options) {
+            if (!password) return 0;
+
+            // 1. Calcular o tamanho do conjunto de caracteres (N) com base nas opções
+            let charSetSize = 0;
+            let poolForEntropy = ''; // Pool usado apenas para cálculo N
+
+            let tempLowercasePool = 'abcdefghijklmnopqrstuvwxyz';
+            let tempUppercasePool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let tempNumbersPool = '0123456789';
+            let tempSpecialPool = SPECIAL_CHARS;
+            let tempUnicodePool = UNICODE_CHARS;
+            let tempSpacePool = ' ';
+
+            if (options.excludeAmbiguous) {
+                const ambiguousRegex = new RegExp(`[${AMBIGUOUS_CHARS}]`, 'g');
+                 tempLowercasePool = tempLowercasePool.replace(ambiguousRegex, '');
+                 tempUppercasePool = tempUppercasePool.replace(ambiguousRegex, '');
+                 tempNumbersPool = tempNumbersPool.replace(ambiguousRegex, '');
+                 // Não removemos ambíguos de outros conjuntos por padrão
+            }
+
+            if (options.useLowercase && tempLowercasePool) poolForEntropy += tempLowercasePool;
+            if (options.useUppercase && tempUppercasePool) poolForEntropy += tempUppercasePool;
+            if (options.useNumbers && tempNumbersPool) poolForEntropy += tempNumbersPool;
+            if (options.useSpecial && tempSpecialPool) poolForEntropy += tempSpecialPool;
+            if (options.useSpaces && tempSpacePool) poolForEntropy += tempSpacePool;
+            if (options.useUnicode && tempUnicodePool) poolForEntropy += tempUnicodePool;
+
+            // Remove duplicados para obter o tamanho real do conjunto
+            charSetSize = new Set(poolForEntropy).size;
+
+             if (charSetSize === 0) {
+                 console.warn("CharSetSize é 0 no cálculo de entropia. Verifique as opções.");
+                 return 0; // Evita log2(0)
+             }
+
+             // 2. Calcular e retornar a entropia teórica base
+             const theoreticalEntropy = Math.log2(charSetSize) * password.length;
+             return Math.max(0, theoreticalEntropy); // Garante que não seja negativa
+        }
+
+
+        // Get entropy description (mantido conforme original)
+        function getEntropyDescription(entropy) {
+        if (entropy < 40) return 'Muito fraca – Pode ser quebrada quase na hora.';
+        if (entropy < 60) return 'Fraca – Aguenta um pouco, mas cai fácil com ataques rápidos.';
+        if (entropy < 80) return 'Moderada – Dá trabalho, mas com esforço é possível quebrar em alguns dias.';
+        if (entropy < 100) return 'Forte – Difícil de quebrar, levaria anos para conseguir.';
+        if (entropy < 128) return 'Muito forte – Um desafio pesado, mesmo para ataques bem planejados.';
+        if (entropy < 258) return 'Segura – Aguenta firme, difícil até para ataques bem persistentes.';
+        if (entropy <= 500) return 'Ultra segura – Um verdadeiro pesadelo para quem tentar quebrar.';
+        return 'Fortíssima – Resiste até às técnicas mais avançadas que possam existir.';
+}
+
+
+
+        // Sistema de Vibração (mantido conforme original)
+        const VibrationSystem = {
+            enabled: false,
+            duration: 15,
+            init() {
+                if ('vibrate' in navigator) {
+                    this.enabled = true;
+                     // Tentativa de ativar a API via interação simulada (pode não funcionar em todos os browsers)
+                    try { navigator.vibrate(1); } catch (e) { /* Ignora erro inicial */ }
+                }
+            },
+            vibrate(customDuration = null) {
+                if (this.enabled && 'vibrate' in navigator) {
+                    try { navigator.vibrate(customDuration || this.duration); }
+                    catch (e) { console.log('Erro ao vibrar:', e); }
+                }
+            }
+        };
+        VibrationSystem.init();
+
+
+         // Elementos do DOM (Atualizado para incluir os checkboxes que faltavam)
+        const elements = {
+            passwordTab: document.getElementById('password-tab'),
+            passphraseTab: document.getElementById('passphrase-tab'),
+            passwordPanel: document.getElementById('password-panel'),
+            passphrasePanel: document.getElementById('passphrase-panel'),
+            passwordOutput: document.getElementById('passwordOutput'),
+            toggleVisibilityBtn: document.getElementById('toggleVisibilityBtn'),
+            copyBtn: document.getElementById('copyBtn'),
+            entropyBar: document.getElementById('entropyBar'),
+            entropyValue: document.getElementById('entropyValue'),
+            entropyDescription: document.getElementById('entropyDescription'),
+            passwordLength: document.getElementById('passwordLength'),
+            lengthValue: document.getElementById('lengthValue'), // Ligado ao input number
+            useLowercase: document.getElementById('useLowercase'),
+            useUppercase: document.getElementById('useUppercase'),
+            useNumbers: document.getElementById('useNumbers'),
+            useSpecial: document.getElementById('useSpecial'),
+            useSpaces: document.getElementById('useSpaces'),
+            useUnicode: document.getElementById('useUnicode'),
+            // Adicionados:
+            atLeastOneOfEach: document.getElementById('atLeastOneOfEach'),
+            excludeAmbiguous: document.getElementById('excludeAmbiguous'),
+
+            wordCount: document.getElementById('wordCount'),
+            wordCountValue: document.getElementById('wordCountValue'), // Ligado ao input number
+            capitalization: document.getElementById('capitalization'),
+            separator: document.getElementById('separator'),
+            generateBtn: document.getElementById('generateBtn'),
+            generateBtnMobile: document.getElementById('generateBtnMobile'),
+            generatePhraseBtn: document.getElementById('generatePhraseBtn'),
+            generatePassphraseBtnMobile: document.getElementById('generatePassphraseBtnMobile'),
+            notificationToast: document.getElementById('notificationToast'),
+            toastTitle: document.getElementById('toastTitle'),
+            toastMessage: document.getElementById('toastMessage')
+        };
+
+
+        // Estado da aplicação (mantido conforme original)
+        const state = {
+            mode: 'password', // 'password' ou 'passphrase'
+            passwordVisible: false // Controla se a senha está visível ou oculta
+        };
+
+        // Inicializar componentes Bootstrap (mantido conforme original)
+        let bootstrapToast = null; // Inicializa como null
+         if(elements.notificationToast) {
+            bootstrapToast = new bootstrap.Toast(elements.notificationToast, {
+                autohide: true,
+                delay: 3000 // Aumentado delay para melhor leitura
+            });
+        }
+
+
+        // Event Listeners (Lógica principal mantida, com ajustes e correções)
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Esconder senha inicialmente (Define type='password' e ícone correto)
+            hidePassword();
+
+            // 2. Gerar senha inicial ao carregar
+            generatePassword(true); // Gera silenciosamente
+
+            // 3. Ouvintes das Abas
+            elements.passwordTab?.addEventListener('click', function() {
+                if (state.mode !== 'password') {
+                    state.mode = 'password';
+                    VibrationSystem.vibrate();
+                    generatePassword(); // Gera nova senha ao trocar de aba
+                }
+            });
+            elements.passphraseTab?.addEventListener('click', function() {
+                 if (state.mode !== 'passphrase') {
+                    state.mode = 'passphrase';
+                    VibrationSystem.vibrate();
+                    generatePassword(); // Gera nova frase ao trocar de aba
+                 }
+            });
+
+            // 4. Ouvintes para Comprimento da Senha (Slider e Input Number)
+            elements.passwordLength?.addEventListener('input', handlePasswordLengthChange);
+            elements.lengthValue?.addEventListener('change', handlePasswordLengthInputChange);
+
+             // 5. Ouvintes para Contagem de Palavras (Slider e Input Number)
+            elements.wordCount?.addEventListener('input', handleWordCountChange);
+            elements.wordCountValue?.addEventListener('change', handleWordCountInputChange);
+
+
+            // 6. Ouvintes para Opções da Frase Secreta
+            elements.capitalization?.addEventListener('change', generatePassword);
+            elements.separator?.addEventListener('change', generatePassword);
+
+            // 7. Ouvintes para Checkboxes de Tipo de Caractere
+            const charTypeCheckboxes = [
+                elements.useLowercase, elements.useUppercase, elements.useNumbers,
+                elements.useSpecial, elements.useSpaces, elements.useUnicode
+            ].filter(el => el); // Filtra nulos se algum ID estiver errado
+
+             charTypeCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    // Garante que pelo menos um tipo de caractere base esteja selecionado
+                    const baseTypesChecked = [
+                        elements.useLowercase, elements.useUppercase,
+                        elements.useNumbers, elements.useSpecial
+                    ].filter(el => el).some(cb => cb.checked);
+
+                    if (!baseTypesChecked && !elements.useSpaces?.checked && !elements.useUnicode?.checked) {
+                        // Se nenhum estiver marcado, remarca o que foi desmarcado (provavelmente minúsculas)
+                        if (elements.useLowercase) elements.useLowercase.checked = true;
+                        showNotification('Aviso', 'Pelo menos um tipo de caractere deve ser selecionado.', 'warning');
+                    }
+                    generatePassword();
+                });
+            });
+
+            // 8. Ouvintes para Checkboxes Adicionais (Garantir/Excluir)
+             elements.atLeastOneOfEach?.addEventListener('change', generatePassword);
+             elements.excludeAmbiguous?.addEventListener('change', generatePassword);
+
+
+            // 9. Ouvinte para Alternar Visibilidade
+            elements.toggleVisibilityBtn?.addEventListener('click', togglePasswordVisibility);
+
+            // 10. Ouvinte para Copiar Senha
+            elements.copyBtn?.addEventListener('click', handleCopyPassword);
+
+            // 11. Ouvintes para Botões Gerar (Desktop e Mobile)
+            elements.generateBtn?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
+            elements.generateBtnMobile?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
+            elements.generatePhraseBtn?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
+            elements.generatePassphraseBtnMobile?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
+
+        });
+
+        // --- Funções Handler Refatoradas ---
+
+        function handlePasswordLengthChange() {
+            const value = elements.passwordLength.value;
+            if (elements.lengthValue) elements.lengthValue.value = value;
+            VibrationSystem.vibrate();
+            generatePassword();
+        }
+
+        function handlePasswordLengthInputChange() {
+            let value = parseInt(elements.lengthValue.value);
+            const min = parseInt(elements.passwordLength?.min || '8');
+            const max = parseInt(elements.passwordLength?.max || '128');
+
+            if (isNaN(value) || value < min) value = min;
+            if (value > max) value = max;
+
+            elements.lengthValue.value = value;
+            if (elements.passwordLength) elements.passwordLength.value = value;
+            VibrationSystem.vibrate();
+            generatePassword();
+        }
+
+
+         function handleWordCountChange() {
+            const value = elements.wordCount.value;
+            if (elements.wordCountValue) elements.wordCountValue.value = value;
+            VibrationSystem.vibrate();
+            generatePassword();
+        }
+
+        function handleWordCountInputChange() {
+             let value = parseInt(elements.wordCountValue.value);
+             const min = parseInt(elements.wordCount?.min || '3');
+             const max = parseInt(elements.wordCount?.max || '22');
+
+             if (isNaN(value) || value < min) value = min;
+             if (value > max) value = max;
+
+             elements.wordCountValue.value = value;
+             if (elements.wordCount) elements.wordCount.value = value;
+             VibrationSystem.vibrate();
+             generatePassword();
+        }
+
+         function togglePasswordVisibility() {
+             if (state.passwordVisible) {
+                 hidePassword();
+             } else {
+                 showPassword();
+                 // Ocultar automaticamente após um delay
+                 setTimeout(hidePassword, 10000); // 10 segundos
+                 showNotification('Aviso', 'Senha será ocultada em 10 segundos.', 'info');
+             }
+             VibrationSystem.vibrate(20); // Vibração um pouco mais longa para feedback
+         }
+
+        async function handleCopyPassword() {
+            if (!elements.passwordOutput || !elements.passwordOutput.value) return;
+
+            try {
+                await navigator.clipboard.writeText(elements.passwordOutput.value);
+                showNotification('Sucesso', 'Copiado para a área de transferência!');
+                VibrationSystem.vibrate(50); // Vibração mais forte ao copiar
+                animateCopyButton(elements.copyBtn);
+
+                 // Gera uma nova senha *depois* de copiar e mostrar a notificação
+                 // Usa setTimeout para garantir que a cópia foi processada
+                 setTimeout(() => generatePassword(true), 500); // Gera silenciosamente após 0.5s
+            } catch (err) {
+                console.error('Erro ao copiar senha:', err);
+                showNotification('Erro', 'Falha ao copiar. Verifique permissões.', 'danger');
+            }
+        }
+
+
+        // Funções auxiliares de UI (show/hide/copy/etc.)
+
+        function showPassword() {
+            if (!elements.passwordOutput || !elements.toggleVisibilityBtn) return;
+            // Em vez de mudar 'type', que pode não funcionar bem com textarea,
+            // usamos uma classe CSS e ajustamos o estilo diretamente se necessário.
+            // Mas a forma mais compatível é usar type=text/password em um INPUT.
+            // Mantendo o type aqui por enquanto, mas ciente das limitações com textarea.
+             elements.passwordOutput.type = 'text'; // Tenta mudar o tipo (pode não ter efeito visual em todos os browsers para textarea)
+             elements.passwordOutput.style.webkitTextSecurity = 'none'; // Força mostrar o texto no Webkit
+             elements.toggleVisibilityBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+             state.passwordVisible = true;
+        }
+
+        function hidePassword() {
+            if (!elements.passwordOutput || !elements.toggleVisibilityBtn) return;
+             elements.passwordOutput.type = 'password'; // Tenta mudar o tipo
+             elements.passwordOutput.style.webkitTextSecurity = 'disc'; // Tenta usar discos no Webkit
+             elements.toggleVisibilityBtn.innerHTML = '<i class="fas fa-eye"></i>';
+             state.passwordVisible = false;
+        }
+
+
+         // Gera senha ou frase secreta com base no modo atual
+        function generatePassword(silence = false) {
+             let password = '';
+             let entropy = 0;
+             let description = '';
+
+             try {
+                 if (state.mode === 'password') {
+                     const options = {
+                         length: parseInt(elements.lengthValue?.value || 16),
+                         useUppercase: elements.useUppercase?.checked ?? true,
+                         useLowercase: elements.useLowercase?.checked ?? true,
+                         useNumbers: elements.useNumbers?.checked ?? true,
+                         useSpecial: elements.useSpecial?.checked ?? true,
+                         useSpaces: elements.useSpaces?.checked ?? false,
+                         useUnicode: elements.useUnicode?.checked ?? false,
+                         atLeastOneOfEach: elements.atLeastOneOfEach?.checked ?? true,
+                         excludeAmbiguous: elements.excludeAmbiguous?.checked ?? true
+                     };
+                     password = generateHybridPassword(options);
+                     entropy = calculatePasswordEntropy(password, options); // Usa a função de cálculo com penalidades
+                     description = getEntropyDescription(entropy);
+
+                 } else { // modo 'passphrase'
+                     const options = {
+                         wordCount: parseInt(elements.wordCountValue?.value || 5),
+                         capitalization: elements.capitalization?.value || 'lowercase',
+                         separator: elements.separator?.value !== undefined ? elements.separator.value : '-'
+                     };
+                     password = generateInventedPassphrase(options);
+                     // --- CORREÇÃO: Cálculo de Entropia para Frase Secreta Inventada ---
+                     // Estimativa baseada no número de palavras e na entropia média por palavra inventada.
+                     // Cada palavra (4-8 chars, CVCV...) tem ~55 milhões de possibilidades. log2(55,164,690) ≈ 25.7 bits.
+                     const BITS_PER_INVENTED_WORD = 25.7;
+                     entropy = BITS_PER_INVENTED_WORD * options.wordCount;
+                     description = getEntropyDescription(entropy); // Usando a mesma escala por simplicidade
+                 }
+
+                 // Atualizar exibição
+                 if (elements.passwordOutput) {
+                    elements.passwordOutput.value = password;
+                    // Garante que a senha recém-gerada respeite o estado de visibilidade atual
+                    if (state.passwordVisible) {
+                        showPassword();
+                    } else {
+                        hidePassword();
+                    }
+                 }
+                 updateEntropyDisplay(entropy, description);
+
+                 // Mostrar notificação (apenas se não for silencioso)
+                 if (!silence) {
+                     showNotification('Sucesso', `${state.mode === 'password' ? 'Senha' : 'Frase secreta'} gerada!`, 'success');
+                 }
+             } catch (error) {
+                 console.error("Erro ao gerar senha/frase:", error);
+                 showNotification('Erro', 'Ocorreu um erro na geração.', 'danger');
+                 if (elements.passwordOutput) elements.passwordOutput.value = "Erro!";
+                 updateEntropyDisplay(0, "Erro na geração");
+             }
+        }
+
+        function updateEntropyDisplay(entropy, description) {
+            if (!elements.entropyBar || !elements.entropyValue || !elements.entropyDescription) return;
+
+            // Atualizar barra de progresso
+             // Usar 128 bits como referência para 100% (segurança excelente)
+            const maxEntropyReference = 128;
+            const percentage = Math.min(100, Math.max(0, (entropy / maxEntropyReference) * 100));
+
+            elements.entropyBar.style.width = `${percentage}%`;
+
+            // Atualizar cor da barra baseada na entropia
+             let barClass = 'bg-danger'; // Muito Fraca
+            if (entropy >= 100) barClass = 'bg-success'; // Forte / Muito Forte / Excelente
+            else if (entropy >= 80) barClass = 'bg-primary'; // Moderada para Forte
+            else if (entropy >= 60) barClass = 'bg-info'; // Fraca para Moderada
+            else if (entropy >= 40) barClass = 'bg-warning'; // Muito Fraca para Fraca
+
+            elements.entropyBar.className = `progress-bar ${barClass}`;
+
+            // Atualizar texto
+            elements.entropyValue.textContent = `Entropia: ${entropy.toFixed(1)} bits`;
+            elements.entropyDescription.textContent = description;
+        }
+
+        // Tipos de notificação: success, info, warning, danger (correspondem às classes do Bootstrap)
+        function showNotification(title, message, type = 'info') {
+             if (!bootstrapToast || !elements.toastTitle || !elements.toastMessage) return;
+
+             // Mapeia tipo para classe de ícone/cor se necessário
+             let iconClass = 'fas fa-info-circle';
+             let textClass = 'text-primary'; // Cor padrão para info
+             switch (type) {
+                case 'success': iconClass = 'fas fa-check-circle'; textClass = 'text-success'; break;
+                case 'warning': iconClass = 'fas fa-exclamation-triangle'; textClass = 'text-warning'; break;
+                case 'danger': iconClass = 'fas fa-times-circle'; textClass = 'text-danger'; break;
+                // case 'info': // padrão
+            }
+
+            // Atualiza o cabeçalho do toast
+            const toastHeaderIcon = elements.notificationToast.querySelector('.toast-header i');
+            if(toastHeaderIcon) {
+                toastHeaderIcon.className = `${iconClass} me-2 ${textClass}`;
+            }
+            elements.toastTitle.textContent = title;
+
+            // Atualiza corpo do toast
+            elements.toastMessage.textContent = message;
+
+            // Mostra o toast
+            bootstrapToast.show();
+        }
+
+
+        function animateCopyButton(btn) {
+            if (!btn) return; // Garante que o botão existe
+
+            // 1. Limpa classes de animação anteriores (caso haja cliques rápidos)
+            //    e garante que 'btn-success' não esteja presente.
+            btn.classList.remove('btn-success', 'text-success');
+
+            // 2. Adiciona APENAS a classe para deixar o ÍCONE verde.
+            btn.classList.add('text-success');
+
+            // 3. Mudar o ícone para um check temporariamente
+            const icon = btn.querySelector('i');
+            const originalIconClass = icon ? icon.className : 'fas fa-copy'; // Guarda o ícone original
+            if (icon) {
+                 icon.className = 'fas fa-check text-success'; // Muda para check e garante a cor verde no ícone
+            }
+
+            // 4. Reverte após um tempo
+            setTimeout(() => {
+                // Remove apenas a classe de cor do texto/ícone
+                btn.classList.remove('text-success');
+                // Restaura o ícone original
+                if (icon) {
+                     icon.className = originalIconClass;
+                 }
+            }, 1500); // Mantém a duração de 1.5 segundos
+        }
+    </script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Registra o Service Worker para funcionalidade PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                        
+                        // Verifica se há atualizações
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nova versão disponível
+                                    if (confirm('Nova versão disponível! Deseja atualizar?')) {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch((error) => {
+                        console.log('Falha ao registrar Service Worker:', error);
+                    });
+            });
+        }
+
+        // Detecta se o app foi instalado como PWA
+        let deferredPrompt;
+        let installButton;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Previne o prompt automático
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Cria botão de instalação se não existir
+            if (!installButton) {
+                createInstallButton();
+            }
+        });
+
+        function createInstallButton() {
+            installButton = document.createElement('button');
+            installButton.className = 'btn btn-outline-primary btn-sm position-fixed';
+            installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 50px; padding: 8px 16px;';
+            installButton.innerHTML = '<i class="fas fa-download me-1"></i>Instalar App';
+            installButton.title = 'Instalar como aplicativo';
+            
+            installButton.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`Resultado da instalação: ${outcome}`);
+                    deferredPrompt = null;
+                    installButton.remove();
+                }
+            });
+            
+            document.body.appendChild(installButton);
+        }
+
+        // Remove o botão se o app já foi instalado
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA foi instalado');
+            if (installButton) {
+                installButton.remove();
+            }
+            deferredPrompt = null;
+        });
+
+        // Detecta se está rodando como PWA
+        function isPWA() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true;
+        }
+
+        // Adiciona classe CSS se estiver rodando como PWA
+        if (isPWA()) {
+            document.documentElement.classList.add('pwa-mode');
+            console.log('Rodando como PWA');
+        }
+
+        // Suporte para atalhos do manifest (URLs com parâmetros)
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            if (mode === 'password') {
+                // Ativa a aba de senha
+                const passwordTab = document.getElementById('password-tab');
+                if (passwordTab) {
+                    passwordTab.click();
+                }
+            } else if (mode === 'passphrase') {
+                // Ativa a aba de frase secreta
+                const passphraseTab = document.getElementById('passphrase-tab');
+                if (passphraseTab) {
+                    passphraseTab.click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

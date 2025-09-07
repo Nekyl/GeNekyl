@@ -1,0 +1,74 @@
+{
+  "name": "Gerador de Senhas Seguras",
+  "short_name": "Gerador Senhas",
+  "description": "Crie senhas e frases secretas fortes e seguras localmente no seu navegador",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#121212",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "pt-BR",
+  "categories": ["security", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/desktop-screenshot.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Gerador de Senhas - Versão Desktop"
+    },
+    {
+      "src": "screenshots/mobile-screenshot.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Gerador de Senhas - Versão Mobile"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Gerar Senha",
+      "short_name": "Senha",
+      "description": "Gerar uma nova senha segura",
+      "url": "./?mode=password",
+      "icons": [
+        {
+          "src": "icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Gerar Frase Secreta",
+      "short_name": "Frase",
+      "description": "Gerar uma nova frase secreta",
+      "url": "./?mode=passphrase",
+      "icons": [
+        {
+          "src": "icons/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}
+
