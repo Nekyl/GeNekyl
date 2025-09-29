@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Senhas Seguras</title>
-    
-    <!-- PWA Meta Tags -->
+
+    <!-- Configurações de Progressive Web App (PWA). -->
     <meta name="description" content="Crie senhas e frases secretas fortes e seguras localmente no seu navegador">
     <meta name="theme-color" content="#121212">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,24 +13,24 @@
     <meta name="apple-mobile-web-app-title" content="GeradorSenhas">
     <meta name="msapplication-TileColor" content="#6b57ff">
     <meta name="msapplication-config" content="browserconfig.xml">
-    
-    <!-- PWA Manifest -->
+
+    <!-- Link para o arquivo manifest do PWA. -->
     <link rel="manifest" href="manifest.json">
-    
-    <!-- Apple Touch Icons -->
+
+    <!-- Ícones para dispositivos Apple. -->
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
-    
-    <!-- Bootstrap CSS from CDN -->
+
+    <!-- Ícones de favoritos para diferentes tamanhos. -->
+    <link rel="icon" type="/image/png" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="icon" type="/image/png" sizes="512x512" href="icons/icon-512x512.png">
+
+    <!-- Importação do CSS do Bootstrap via CDN. -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Custom CSS -->
+    <!-- Importação do Font Awesome para ícones. -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Estilos CSS personalizados da aplicação. -->
     <style>
-        /* Base styling */
+
         :root {
             --primary: #6b57ff;
             --primary-dark: #5040c9;
@@ -53,7 +53,6 @@
             min-height: 100vh;
         }
 
-        /* Card styling */
         .card {
             background-color: var(--dark-subtle);
             border-radius: 1rem;
@@ -69,7 +68,6 @@
             background-color: var(--dark-subtle) !important;
         }
 
-        /* Form styling */
         .form-control, .form-select {
             border: none;
             border-radius: 0.5rem;
@@ -82,12 +80,26 @@
             background-color: rgba(42, 42, 42, 0.8);
         }
 
+                .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(107, 87, 255, 0.25);
+            background-color: rgba(42, 42, 42, 0.8);
+        }
+
+        .form-control::placeholder {
+            color: rgba(239, 239, 239, 0.6); 
+            opacity: 1; 
+        }
+
         .input-group .btn {
             border-top-right-radius: 0.5rem;
             border-bottom-right-radius: 0.5rem;
         }
 
-        /* Range and number input */
+        .input-group .btn {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
         .form-range {
             width: 100%;
             height: 1.5rem;
@@ -120,7 +132,6 @@
             cursor: pointer;
         }
 
-        /* Switch toggle styling */
         .form-check-input {
             background-color: var(--darker);
             border-color: var(--darker);
@@ -143,7 +154,6 @@
             border-radius: 1.5rem;
         }
 
-        /* Buttons */
         .btn-primary {
             background-color: var(--primary);
             border-color: var(--primary);
@@ -180,7 +190,6 @@
             background-color: var(--darker);
         }
 
-        /* Password output field */
         .password-display-container {
             display: flex;
             align-items: stretch;
@@ -257,7 +266,6 @@
             transition: color 0.3s, transform 0.3s;
         }
 
-        /* Entropy information */
         .entropy-info {
             display: flex;
             justify-content: space-between;
@@ -292,7 +300,6 @@
             transition: var(--transition);
         }
 
-        /* Toast notification */
         .toast {
             background-color: var(--dark-subtle);
             color: var(--light);
@@ -338,7 +345,6 @@
             opacity: 1;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .password-display-container {
                 position: relative;
@@ -392,7 +398,6 @@
             }
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -402,7 +407,6 @@
             animation: fadeIn 0.5s ease-out;
         }
 
-        /* Hover effects */
         .btn:hover {
             transform: translateY(-2px);
         }
@@ -411,7 +415,6 @@
             transform: translateY(0);
         }
 
-        /* Size display input styling */
         .size-display-input {
             background-color: transparent;
             border: none;
@@ -434,7 +437,6 @@
             color: var(--primary);
         }
 
-        /* Mobile specific styles */
         @media (max-width: 768px) {
             #generateBtnMobile {
                 margin: 1rem 0;
@@ -462,18 +464,149 @@
             }
         }
 
+        .keyfile-info {
+            background-color: var(--darker);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .keyfile-info h6 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .keyfile-info p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--success), #25b889);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, #25b889, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(44, 212, 160, 0.3);
+        }
+
+        .keyfile-size-info {
+            font-size: 0.85rem;
+            color: var(--light);
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .btn-install-pwa {
+            background: linear-gradient(135deg, #6b57ff, #8b5cf6);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(107, 87, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-install-pwa::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-install-pwa:hover {
+            background: linear-gradient(135deg, #5040c9, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 87, 255, 0.4);
+        }
+
+        .btn-install-pwa:hover::before {
+            left: 100%;
+        }
+
+        .btn-install-pwa:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(107, 87, 255, 0.3);
+        }
+
+        .btn-install-pwa i {
+            font-size: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-1px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .btn-install-pwa {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+                border-radius: 1.5rem;
+            }
+
+            .btn-install-pwa .install-text {
+                display: none;
+            }
+
+            .btn-install-pwa i {
+                margin-right: 0 !important;
+            }
+        }
+
+        @media (display-mode: standalone) {
+            #installPwaContainer {
+                display: none !important;
+            }
+        }
 
     </style>
 </head>
 
 <body class="bg-dark text-light">
     <div class="container py-4 d-flex flex-column" style="min-height: 100vh;">
-        <header class="text-center mb-5">
+        <header class="text-center mb-5 position-relative">
             <h1 class="display-4 fw-bold"><i class="fas fa-shield-alt text-primary me-2"></i>Gerador de Senhas</h1>
-            <p class="lead">Crie senhas e frases secretas fortes e seguras.</p>
+            <p class="lead">Crie senhas, frases secretas e arquivos de chave seguros.</p>
+
+            <!-- Botão para instalar o PWA. -->
+            <div class="position-fixed bottom-0 end-0 p-3 d-none" id="installPwaContainer" style="z-index: 1050;">
+                <button class="btn-install-pwa" id="installPwaBtn" title="Instalar como aplicativo">
+                    <i class="fas fa-download me-2"></i>
+                    <span class="install-text">Instalar Aplicação</span>
+                </button>
+            </div>
         </header>
 
-        <!-- Notificação Toast -->
+        <!-- Componente de notificação tipo Toast. -->
         <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
             <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
@@ -491,7 +624,7 @@
             <div class="col-lg-8">
                 <div class="card bg-dark-subtle text-light border-0 shadow-lg">
                     <div class="card-header bg-dark-subtle border-0">
-                        <!-- Abas de Modo -->
+                        <!-- Navegação por abas para diferentes modos de geração. -->
                         <ul class="nav nav-pills nav-fill" id="modeTab" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="password-tab" data-bs-toggle="pill" data-bs-target="#password-panel" type="button" role="tab" aria-controls="password-panel" aria-selected="true">
@@ -503,18 +636,28 @@
                                     <i class="fas fa-quote-right me-2"></i>Frase Secreta
                                 </button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="keyfile-tab" data-bs-toggle="pill" data-bs-target="#keyfile-panel" type="button" role="tab" aria-controls="keyfile-panel" aria-selected="false">
+    <i class="fas fa-file-shield me-2"></i>Arquivo de Chave
+</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="master-tab" data-bs-toggle="pill" data-bs-target="#master-panel" type="button" role="tab" aria-controls="master-panel" aria-selected="false">
+                                    <i class="fas fa-crown me-2"></i>Modo Mestre
+                                </button>
+                            </li>
                         </ul>
                     </div>
                     <div class="card-body">
-                        <!-- Área de Exibição da Senha -->
-                        <div class="mb-4">
+                        <!-- Área de exibição da senha ou frase secreta. -->
+                        <div class="mb-4" id="passwordDisplayArea">
                             <div class="password-display-container">
                                 <div class="password-field-wrapper">
-                                     <!-- Usando textarea, mas controlando o tipo via JS -->
+
                                     <textarea class="form-control bg-darker text-light" id="passwordOutput" readonly rows="3"></textarea>
                                     <div class="password-actions">
                                         <button class="toggle-visibility-btn" type="button" id="toggleVisibilityBtn" title="Mostrar/Ocultar Senha">
-                                            <i class="fas fa-eye"></i> <!-- Ícone inicial -->
+                                            <i class="fas fa-eye"></i> 
                                         </button>
                                         <button class="copy-btn" type="button" id="copyBtn" title="Copiar para Área de Transferência">
                                             <i class="fas fa-copy"></i>
@@ -533,27 +676,27 @@
                             </div>
                         </div>
 
-                        <!-- Conteúdo das Abas -->
+                        <!-- Conteúdo dinâmico das abas. -->
                         <div class="tab-content" id="generateTabContent">
-                            <!-- Painel de Senha -->
+                            <!-- Painel para geração de senhas. -->
                             <div class="tab-pane fade show active" id="password-panel" role="tabpanel" aria-labelledby="password-tab">
-                                <!-- Comprimento -->
+                                <!-- Configuração do comprimento da senha. -->
                                 <div class="mb-3">
                                     <label for="passwordLength" class="form-label d-flex justify-content-between align-items-center">
                                         <span>Tamanho da Senha</span>
-                                        <input type="number" class="size-display-input" id="lengthValue" min="8" max="128" value="24"> <!-- Aumentei o max para 128 -->
+                                        <input type="number" class="size-display-input" id="lengthValue" min="8" max="128" value="24"> 
                                     </label>
-                                    <input type="range" class="form-range" id="passwordLength" min="8" max="128" value="24"> <!-- Aumentei o max para 128 -->
+                                    <input type="range" class="form-range" id="passwordLength" min="8" max="128" value="24"> 
                                 </div>
 
-                                <!-- Botão Gerar (visível apenas em mobile) -->
+                                <!-- Botão de geração visível apenas em dispositivos móveis. -->
                                 <div class="d-md-none mb-3">
                                     <button class="btn btn-primary btn-lg w-100" id="generateBtnMobile">
                                         <i class="fas fa-sync-alt me-2"></i>Gerar
                                     </button>
                                 </div>
 
-                                <!-- Tipos de Caracteres -->
+                                <!-- Opções de tipos de caracteres para a senha. -->
                                 <div class="mb-3">
                                     <label class="form-label">Tipos de Caracteres</label>
                                     <div class="row mb-2">
@@ -580,7 +723,7 @@
                                         <div class="col-md-6">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="useSpecial" checked>
-                                                <label class="form-check-label" for="useSpecial">Especiais (!@#$%^&*...)</label> <!-- Texto mais genérico -->
+                                                <label class="form-check-label" for="useSpecial">Especiais (!@#$%^&*...)</label> 
                                             </div>
                                         </div>
                                     </div>
@@ -593,12 +736,12 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="useUnicode"> <!-- Removido o checked padrão -->
+                                                <input class="form-check-input" type="checkbox" id="useUnicode"> 
                                                 <label class="form-check-label" for="useUnicode">Unicode (Complexos)</label>
                                             </div>
                                         </div>
                                     </div>
-                                     <!-- Opções adicionadas que estavam faltando no HTML -->
+                                     <!-- Opções adicionais de caracteres. -->
                                      <div class="row mt-2">
                                         <div class="col-md-6">
                                             <div class="form-check form-switch">
@@ -615,8 +758,7 @@
                                     </div>
                                 </div>
 
-
-                                <!-- Botão Gerar (visível apenas em desktop) -->
+                                <!-- Botão de geração visível apenas em desktops. -->
                                 <div class="d-none d-md-block">
                                     <div class="d-grid gap-2 mt-4">
                                         <button class="btn btn-primary btn-lg" id="generateBtn">
@@ -626,25 +768,25 @@
                                 </div>
                             </div>
 
-                            <!-- Painel de Frase Secreta -->
+                            <!-- Painel para geração de frases secretas. -->
                             <div class="tab-pane fade" id="passphrase-panel" role="tabpanel" aria-labelledby="passphrase-tab">
-                                <!-- Número de Palavras -->
+                                <!-- Configuração do número de palavras da frase secreta. -->
                                 <div class="mb-3">
                                     <label for="wordCount" class="form-label d-flex justify-content-between align-items-center">
                                         <span>Número de Palavras</span>
-                                        <input type="number" class="size-display-input" id="wordCountValue" min="3" max="22" value="6"> <!-- Valor padrão ajustado -->
+                                        <input type="number" class="size-display-input" id="wordCountValue" min="3" max="22" value="6"> 
                                     </label>
-                                    <input type="range" class="form-range" id="wordCount" min="3" max="22" value="6"> <!-- Valor padrão ajustado -->
+                                    <input type="range" class="form-range" id="wordCount" min="3" max="22" value="6"> 
                                 </div>
 
-                                <!-- Botão Gerar (visível apenas em mobile) -->
+                                <!-- Botão de geração visível apenas em dispositivos móveis. -->
                                 <div class="d-md-none mb-3">
                                     <button class="btn btn-primary btn-lg w-100" id="generatePassphraseBtnMobile">
                                         <i class="fas fa-sync-alt me-2"></i>Gerar
                                     </button>
                                 </div>
 
-                                <!-- Capitalização -->
+                                <!-- Configuração da capitalização das palavras das palavras da frase secreta. -->
                                 <div class="mb-3">
                                     <label for="capitalization" class="form-label">Capitalização</label>
                                     <select class="form-select bg-darker text-light" id="capitalization">
@@ -654,7 +796,7 @@
                                     </select>
                                 </div>
 
-                                <!-- Separador -->
+                                <!-- Configuração do separador entre as palavras da frase secreta. -->
                                 <div class="mb-3">
                                     <label for="separator" class="form-label">Separador de Palavras</label>
                                     <select class="form-select bg-darker text-light" id="separator">
@@ -670,13 +812,188 @@
                                     </select>
                                 </div>
 
-                                <!-- Botão Gerar (visível apenas em desktop) -->
+                                <!-- Botão de geração visível apenas em desktops. -->
                                 <div class="d-none d-md-block">
                                     <div class="d-grid gap-2 mt-4">
                                         <button class="btn btn-primary btn-lg" id="generatePhraseBtn">
                                             <i class="fas fa-sync-alt me-2"></i>Gerar
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Painel para geração de arquivos de chave. -->
+                            <div class="tab-pane fade" id="keyfile-panel" role="tabpanel" aria-labelledby="keyfile-tab">
+
+                                <div class="keyfile-info">
+                                    <h6><i class="fas fa-info-circle me-2"></i>Sobre Arquivos de Chave</h6>
+                                    <p>Arquivos de chave são sequências de bytes aleatórios criptograficamente seguros, ideais para uso com gerenciadores de senha como KeePass. Eles oferecem segurança máxima quando usados como fator de autenticação adicional.</p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="keyfileSize" class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Tamanho da Chave</span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="number" class="size-display-input" id="keyfileSizeValue" min="32" max="1024" value="64">
+                                            <small class="text-muted">bytes</small>
+                                        </div>
+                                    </label>
+                                    <input type="range" class="form-range" id="keyfileSize" min="32" max="1024" value="64" step="32">
+                                    <div class="keyfile-size-info" id="keyfileSizeInfo">
+                                        64 bytes = 512 bits - Recomendado para uso geral
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Tamanhos Predefinidos</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-primary w-100" id="keyfileSize64" type="button">
+                                                <strong>64 bytes</strong><br>
+                                                <small>Padrão Seguro</small>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-primary w-100" id="keyfileSize128" type="button">
+                                                <strong>128 bytes</strong><br>
+                                                <small>Alta Segurança</small>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-primary w-100" id="keyfileSize256" type="button">
+                                                <strong>256 bytes</strong><br>
+                                                <small>Máxima Segurança</small>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="entropy-info" id="keyfileEntropyInfo" style="display: none;">
+                                    <div class="entropy-meter">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" id="keyfileEntropyBar" role="progressbar" style="width: 100%"></div>
+                                        </div>
+                                        <small id="keyfileEntropyValue">Entropia: 512 bits</small>
+                                    </div>
+                                    <div class="entropy-description" id="keyfileEntropyDescription">Muito Forte - Excelente para segurança criptográfica máxima.</div>
+                                </div>
+
+                                <div class="d-grid gap-2 mt-4">
+                                    <button class="btn btn-download btn-lg" id="generateKeyfileBtn">
+                                        <i class="fas fa-download me-2"></i>Gerar e Baixar keyfile.bin
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Painel para geração de senhas determinísticas (Modo Mestre). -->
+                            <div class="tab-pane fade" id="master-panel" role="tabpanel" aria-labelledby="master-tab">
+
+                                <div class="keyfile-info">
+                                    <h6><i class="fas fa-info-circle me-2"></i>Sobre o Modo Mestre</h6>
+                                    <p>O Modo Mestre gera senhas determinísticas usando sua senha mestra e um identificador único. A mesma combinação sempre produzirá a mesma senha, permitindo recuperação sem armazenamento.</p>
+                                </div>
+
+                                <!-- Campo para a senha mestra. -->
+                                <div class="mb-3">
+                                    <label for="masterPassword" class="form-label">Senha Mestra</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control bg-darker text-light" id="masterPassword" placeholder="Digite sua senha mestra">
+                                        <button class="btn btn-outline-secondary" type="button" id="toggleMasterPasswordBtn" title="Mostrar/Ocultar Senha Mestra">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Campo para o identificador do serviço/site. -->
+                                <div class="mb-3">
+                                    <label for="masterIdentifier" class="form-label">Identificador</label>
+                                    <input type="text" class="form-control bg-darker text-light" id="masterIdentifier" placeholder="ex: google.com, banco.com">
+                                    <div>
+                                      <p class="text-light opacity-75"><small>Use um identificador único para cada serviço ou site.</small></p>
+
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="mastert" class="form-label">Salt Pessoal (Opcional)</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control bg-darker text-light" id="masterSalt" placeholder="Salt adicional para maior segurança">
+                                        <button class="btn btn-outline-secondary" type="button" id="toggleMasterSaltBtn" title="Mostrar/Ocultar Salt">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-light opacity-75"><small>Adiciona uma camada extra de segurança. Mantenha-o secreto e consistente.</small></p>
+
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="masterPasswordLength" class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Tamanho da Senha</span>
+                                        <input type="number" class="size-display-input" id="masterLengthValue" min="8" max="128" value="16">
+                                    </label>
+                                    <input type="range" class="form-range" id="masterPasswordLength" min="8" max="128" value="16">
+                                </div>
+
+                                <!-- Opções de tipos de caracteres para a senha. -->
+                                <div class="mb-3">
+                                    <label class="form-label">Tipos de Caracteres</label>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseLowercase" checked>
+                                                <label class="form-check-label" for="masterUseLowercase">Minúsculas (a-z)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseUppercase" checked>
+                                                <label class="form-check-label" for="masterUseUppercase">Maiúsculas (A-Z)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseNumbers" checked>
+                                                <label class="form-check-label" for="masterUseNumbers">Números (0-9)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseSpecial" checked>
+                                                <label class="form-check-label" for="masterUseSpecial">Especiais (!@#$%^&*...)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseUnicode">
+                                                <label class="form-check-label" for="masterUseUnicode">Unicode (Complexos)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterExcludeAmbiguous" checked>
+                                                <label class="form-check-label" for="masterExcludeAmbiguous">Excluir Ambíguos (Il1O0...)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterAtLeastOneOfEach" checked>
+                                                <label class="form-check-label" for="masterAtLeastOneOfEach">Garantir um de cada tipo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Botão para gerar a senha determinística. -->
+                                <div class="d-grid gap-2 mt-4">
+                                    <button class="btn btn-primary btn-lg" id="generateMasterBtn">
+                                        <i class="fas fa-key me-2"></i>Gerar Senha Determinística
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -688,7 +1005,7 @@
             <p class="mb-2 text-light">  
                 <span class="d-md-inline-flex align-items-center gap-1">  
                     <span class="text-warning">🔐</span>  
-                    Esta ferramenta gera senhas e frases secretas  
+                    Esta ferramenta gera senhas, frases secretas e arquivos de chave
                     <span class="text-white fw-medium">localmente no seu navegador</span>.  
                 </span>  
             </p>  
@@ -698,29 +1015,28 @@
                target="_blank" 
                rel="noopener noreferrer" 
                class="link-light text-decoration-none d-flex justify-content-center align-items-center gap-2">
-        
+
                 <p class="mb-0 text-light opacity-75">
                     <small>Achou útil? Deixe seu feedback, contribua ou reporte um problema</small>
                 </p>
-        
+
                 <i class="fab fa-github fs-4"></i>
             </a>
         </div>
     </footer> 
     </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Importação do JavaScript do Bootstrap via CDN. -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Inline JavaScript -->
+    <!-- Script JavaScript embutido para a lógica da aplicação. -->
         <script>
-        // No início do seu script, preparamos para carregar a lista de palavras
         let wordlist = [];
-        
+
         async function loadWordlist() {
             try {
-                // Carrega o seu arquivo JSON com a lista de palavras
-                const response = await fetch('./pass.json');
+                // Carrega o arquivo JSON com a lista de palavras
+                const response = await fetch('pass.json');
                 wordlist = await response.json();
                 console.log(`Lista de palavras carregada com sucesso. Total: ${wordlist.length} palavras.`);
             } catch (err) {
@@ -728,7 +1044,7 @@
                 showNotification('Erro Crítico', 'Não foi possível carregar a lista de palavras para gerar frases secretas.', 'danger');
             }
         }
-        
+
         // Dispara o carregamento da lista assim que o conteúdo da página estiver pronto
         document.addEventListener('DOMContentLoaded', loadWordlist);
 
@@ -762,20 +1078,19 @@
             }
         }
 
-        // Constants
-        const SPECIAL_CHARS = '!@#$%^&*()-_=+[]{}\\|;:\'",.<>/?~`';
-        const AMBIGUOUS_CHARS = 'Il1O0S5B8G6Z2';
-        const UNICODE_CHARS = '°±µ¶§©®™¥€£¢¤¦¨«»←→↑↓⇒⇔∀∃∈∉∋∑∞∨∧∩∪∴∵∼≈≠≤≥⊂⊃⊆⊇⊕⊗⊥⋅⌈⌉⌊⌋⌠⌡〈〉αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ';
+        // Constantes para caracteres especiais, unicode e ambíguos
+        const SPECIAL_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+        const UNICODE_CHARS = 'αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ';
+        const AMBIGUOUS_CHARS = 'Il1O0';
 
-        // --- FUNÇÃO PRINCIPAL ATUALIZADA ---
-        // Função para gerar senha
+        // Função principal para gerar senha ou frase secreta
         function generatePassword(silent = false) {
             let password = '';
             let entropy = 0;
-            
+
             if (state.mode === 'password') {
                 const options = {
-                    length: parseInt(elements.passwordLength?.value || '24'),
+                    length: parseInt(elements.lengthValue?.value || '24'),
                     useLowercase: elements.useLowercase?.checked || false,
                     useUppercase: elements.useUppercase?.checked || false,
                     useNumbers: elements.useNumbers?.checked || false,
@@ -785,74 +1100,73 @@
                     excludeAmbiguous: elements.excludeAmbiguous?.checked || false,
                     atLeastOneOfEach: elements.atLeastOneOfEach?.checked || false
                 };
-                
+
                 password = generateRandomPassword(options);
                 entropy = calculatePasswordEntropy(password, options);
-            } else { // Modo Frase Secreta
+            } else if (state.mode === 'passphrase') {
                 const options = {
-                    wordCount: parseInt(elements.wordCount?.value || '6'),
+                    wordCount: parseInt(elements.wordCountValue?.value || '6'),
                     capitalization: elements.capitalization?.value || 'lowercase',
                     separator: elements.separator?.value || ' '
                 };
-                
-                // **MUDANÇA AQUI:** Chamando a nova função Diceware
+
                 password = generateDicewarePassphrase(options);
-                
-                // **MUDANÇA AQUI:** Cálculo de entropia agora é preciso
-                // Usa `|| 1` como segurança para evitar log(0) se a lista falhar ao carregar
                 const entropyPerWord = Math.log2(wordlist.length || 1);
                 entropy = options.wordCount * entropyPerWord;
+            } else if (state.mode === 'master') {
+                // No modo mestre, a geração é manual via botão
+                return;
             }
-            
+
             // Atualizar UI
             if (elements.passwordOutput) {
                 elements.passwordOutput.value = password;
             }
-            
+
             updateEntropyDisplay(entropy);
-            
-            if (!silent) {
+
+            if (!silent && state.mode !== 'master') {
                 showNotification('Sucesso', 'Nova senha gerada!');
             }
         }
 
-        // Função para gerar senha aleatória (sem alterações)
+        // Função para gerar senha aleatória
         function generateRandomPassword(options) {
             let charset = '';
-            
+
             if (options.useLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
             if (options.useUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             if (options.useNumbers) charset += '0123456789';
             if (options.useSpecial) charset += SPECIAL_CHARS;
             if (options.useSpaces) charset += ' ';
             if (options.useUnicode) charset += UNICODE_CHARS;
-            
+
             if (options.excludeAmbiguous) {
                 const ambiguousRegex = new RegExp(`[${AMBIGUOUS_CHARS}]`, 'g');
                 charset = charset.replace(ambiguousRegex, '');
             }
-            
+
             if (!charset) {
                 charset = 'abcdefghijklmnopqrstuvwxyz'; // Fallback
             }
-            
+
             let password = '';
-            
+
             if (options.atLeastOneOfEach) {
                 const requiredChars = [];
                 if (options.useLowercase) requiredChars.push('abcdefghijklmnopqrstuvwxyz'[getRandomIntSecure(26)]);
                 if (options.useUppercase) requiredChars.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ'[getRandomIntSecure(26)]);
                 if (options.useNumbers) requiredChars.push('0123456789'[getRandomIntSecure(10)]);
                 if (options.useSpecial) requiredChars.push(SPECIAL_CHARS[getRandomIntSecure(SPECIAL_CHARS.length)]);
-                
+
                 for (const char of requiredChars) {
                     password += char;
                 }
-                
+
                 for (let i = password.length; i < options.length; i++) {
                     password += charset[getRandomIntSecure(charset.length)];
                 }
-                
+
                 const passwordArray = password.split('');
                 shuffleArraySecure(passwordArray);
                 password = passwordArray.join('');
@@ -861,29 +1175,25 @@
                     password += charset[getRandomIntSecure(charset.length)];
                 }
             }
-            
+
             return password;
         }
 
-        // --- NOVA FUNÇÃO ---
-        // Função para gerar frase secreta usando o método Diceware (lista de palavras)
+        // Função para gerar frase secreta
         function generateDicewarePassphrase({
             wordCount = 6,
             capitalization = 'lowercase',
             separator = ' '
         } = {}) {
-            // Verifica se a lista de palavras foi carregada
             if (wordlist.length === 0) {
                 return "Erro: A lista de palavras não está disponível.";
             }
 
             const words = [];
             for (let i = 0; i < wordCount; i++) {
-                // Sorteia um índice aleatório seguro
                 const randomIndex = getRandomIntSecure(wordlist.length);
                 let word = wordlist[randomIndex];
 
-                // Aplica a capitalização escolhida pelo usuário
                 switch (capitalization) {
                     case 'uppercase':
                         word = word.toUpperCase();
@@ -891,7 +1201,7 @@
                     case 'title':
                         word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
                         break;
-                    default: // 'lowercase' é o padrão
+                    default:
                         word = word.toLowerCase();
                 }
                 words.push(word);
@@ -899,46 +1209,29 @@
             return words.join(separator);
         }
 
-        // Calcula a entropia da senha (sem alterações)
+        // Calcula a entropia da senha
         function calculatePasswordEntropy(password, options) {
             if (!password) return 0;
 
-            let charSetSize = 0;
             let poolForEntropy = '';
-
-            let tempLowercasePool = 'abcdefghijklmnopqrstuvwxyz';
-            let tempUppercasePool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            let tempNumbersPool = '0123456789';
-            let tempSpecialPool = SPECIAL_CHARS;
-            let tempUnicodePool = UNICODE_CHARS;
-            let tempSpacePool = ' ';
+            if (options.useLowercase) poolForEntropy += 'abcdefghijklmnopqrstuvwxyz';
+            if (options.useUppercase) poolForEntropy += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (options.useNumbers) poolForEntropy += '0123456789';
+            if (options.useSpecial) poolForEntropy += SPECIAL_CHARS;
+            if (options.useSpaces) poolForEntropy += ' ';
+            if (options.useUnicode) poolForEntropy += UNICODE_CHARS;
 
             if (options.excludeAmbiguous) {
                 const ambiguousRegex = new RegExp(`[${AMBIGUOUS_CHARS}]`, 'g');
-                 tempLowercasePool = tempLowercasePool.replace(ambiguousRegex, '');
-                 tempUppercasePool = tempUppercasePool.replace(ambiguousRegex, '');
-                 tempNumbersPool = tempNumbersPool.replace(ambiguousRegex, '');
+                poolForEntropy = poolForEntropy.replace(ambiguousRegex, '');
             }
 
-            if (options.useLowercase && tempLowercasePool) poolForEntropy += tempLowercasePool;
-            if (options.useUppercase && tempUppercasePool) poolForEntropy += tempUppercasePool;
-            if (options.useNumbers && tempNumbersPool) poolForEntropy += tempNumbersPool;
-            if (options.useSpecial && tempSpecialPool) poolForEntropy += tempSpecialPool;
-            if (options.useSpaces && tempSpacePool) poolForEntropy += tempSpacePool;
-            if (options.useUnicode && tempUnicodePool) poolForEntropy += tempUnicodePool;
-
-            charSetSize = new Set(poolForEntropy).size;
-
-             if (charSetSize === 0) {
-                 console.warn("CharSetSize é 0 no cálculo de entropia. Verifique as opções.");
-                 return 0;
-             }
-
-             const theoreticalEntropy = Math.log2(charSetSize) * password.length;
-             return Math.max(0, theoreticalEntropy);
+            const charSetSize = new Set(poolForEntropy).size;
+             if (charSetSize === 0) return 0;
+             return Math.log2(charSetSize) * password.length;
         }
 
-        // Função de descrição da entropia (sem alterações)
+        // Função de descrição da entropia
         function getEntropyDescription(entropy) {
             if (entropy < 40) return 'Muito fraca – Pode ser quebrada quase na hora.';
             if (entropy < 60) return 'Fraca – Aguenta um pouco, mas cai fácil com ataques rápidos.';
@@ -950,22 +1243,167 @@
             return 'Fortíssima – Resiste até às técnicas mais avançadas que possam existir.';
         }
 
-        // --- Restante do código (sem alterações) ---
+        // Funções para Keyfile
+        function generateBinaryKey(sizeInBytes) {
+            if (sizeInBytes <= 0 || !Number.isInteger(sizeInBytes)) {
+                console.error("generateBinaryKey: sizeInBytes deve ser um inteiro positivo.");
+                return new Uint8Array(0);
+            }
+            const randomBytes = new Uint8Array(sizeInBytes);
+            window.crypto.getRandomValues(randomBytes);
+            return randomBytes;
+        }
+
+        function downloadKeyfile(keyData, filename = 'keyfile.bin') {
+            const blob = new Blob([keyData], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function getKeyEntropyDescription(entropy) {
+            if (entropy < 128) return 'Fraca - Tamanho insuficiente para segurança criptográfica.';
+            if (entropy < 192) return 'Moderada - Aceitável para alguns usos, mas pode ser melhor.';
+            if (entropy < 256) return 'Forte - Boa para a maioria dos usos criptográficos.';
+            if (entropy >= 256) return 'Muito Forte - Excelente para segurança criptográfica máxima.';
+            return 'Desconhecida';
+        }
+
+        function updateKeyfileSizeInfo() {
+            if (!elements.keyfileSizeValue) return;
+            const size = parseInt(elements.keyfileSizeValue.value || '64');
+            const bits = size * 8;
+            const entropy = bits;
+
+            let description = `${size} bytes = ${bits} bits - ${getKeyEntropyDescription(entropy)}`;
+
+            if (elements.keyfileSizeInfo) {
+                elements.keyfileSizeInfo.textContent = description;
+            }
+
+            if (elements.keyfileEntropyInfo && elements.keyfileEntropyInfo.style.display !== 'none') {
+                if (elements.keyfileEntropyValue) elements.keyfileEntropyValue.textContent = `Entropia: ${entropy} bits`;
+                if (elements.keyfileEntropyDescription) elements.keyfileEntropyDescription.textContent = getKeyEntropyDescription(entropy);
+            }
+        }
+
+        // === FUNÇÕES PARA MODO MESTRE ===
+
+        async function generateDeterministicPassword(masterPassword, identifier, personalSalt, length, options) {
+            if (!masterPassword || !identifier) {
+                throw new Error('Senha mestra e identificador são obrigatórios');
+            }
+
+            const combinedSalt = identifier + (personalSalt || '');
+            const encoder = new TextEncoder();
+
+            try {
+                const keyMaterial = await window.crypto.subtle.importKey(
+                    'raw', encoder.encode(masterPassword), { name: 'PBKDF2' }, false, ['deriveBits']
+                );
+
+                const derivedBits = await window.crypto.subtle.deriveBits(
+                    {
+                        name: 'PBKDF2',
+                        salt: encoder.encode(combinedSalt),
+                        iterations: 1000000,
+                        hash: 'SHA-512'
+                    },
+                    keyMaterial,
+                    512
+                );
+
+                const bytes = new Uint8Array(derivedBits);
+                return convertBitsToPassword(bytes, length, options);
+            } catch (error) {
+                console.error('Erro no PBKDF2:', error);
+                throw new Error('Falha ao derivar a chave.');
+            }
+        }
+
+        function convertBitsToPassword(bytes, length, options) {
+            let charset = '';
+            if (options.useLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (options.useUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (options.useNumbers) charset += '0123456789';
+            if (options.useSpecial) charset += SPECIAL_CHARS;
+            if (options.useUnicode) charset += UNICODE_CHARS;
+
+            if (options.excludeAmbiguous) {
+                const ambiguousRegex = new RegExp(`[${AMBIGUOUS_CHARS}]`, 'g');
+                charset = charset.replace(ambiguousRegex, '');
+            }
+
+            if (!charset) {
+                throw new Error('Pelo menos um tipo de caractere deve ser selecionado.');
+            }
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                // Reusa os bytes de forma determinística se a senha for mais longa que os bytes derivados
+                password += charset[bytes[i % bytes.length] % charset.length];
+            }
+
+            if (options.atLeastOneOfEach) {
+                // Passa os bytes originais para a função de garantia
+                password = ensureCharacterTypes(password, options, bytes);
+            }
+
+            return password;
+        }
+
+        function ensureCharacterTypes(password, options, bytes) {
+            let result = password.split('');
+            let byteIndex = password.length; // Começa a usar bytes após os já usados para gerar a senha
+
+            const getNextByte = () => {
+                byteIndex = (byteIndex + 1) % bytes.length;
+                return bytes[byteIndex];
+            };
+
+            const types = [
+                { option: 'useLowercase', chars: 'abcdefghijklmnopqrstuvwxyz', regex: /[a-z]/ },
+                { option: 'useUppercase', chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', regex: /[A-Z]/ },
+                { option: 'useNumbers', chars: '0123456789', regex: /[0-9]/ },
+                { option: 'useSpecial', chars: SPECIAL_CHARS, regex: new RegExp(`[${SPECIAL_CHARS.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}]`) },
+                { option: 'useUnicode', chars: UNICODE_CHARS, regex: new RegExp(`[${UNICODE_CHARS.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}]`) }
+            ];
+
+            for (const type of types) {
+                if (options[type.option] && !type.regex.test(result.join(''))) {
+                    let availableChars = type.chars;
+                    if (options.excludeAmbiguous) {
+                        const ambiguousRegex = new RegExp(`[${AMBIGUOUS_CHARS}]`, 'g');
+                        availableChars = availableChars.replace(ambiguousRegex, '');
+                    }
+
+                    if (availableChars.length > 0) {
+                        const positionToReplace = getNextByte() % result.length;
+                        const newChar = availableChars[getNextByte() % availableChars.length];
+                        result[positionToReplace] = newChar;
+                    }
+                }
+            }
+            return result.join('');
+        }
+
+        // --- Handlers e Funções de UI ---
 
         const VibrationSystem = {
             enabled: false,
             duration: 15,
             init() {
-                if ('vibrate' in navigator) {
-                    this.enabled = true;
-                    try { navigator.vibrate(1); } catch (e) { /* Ignora erro inicial */ }
-                }
+                if ('vibrate' in navigator) this.enabled = true;
             },
             vibrate(customDuration = null) {
-                if (this.enabled && 'vibrate' in navigator) {
-                    try { navigator.vibrate(customDuration || this.duration); }
-                    catch (e) { console.log('Erro ao vibrar:', e); }
-                }
+                if (this.enabled) navigator.vibrate(customDuration || this.duration);
             }
         };
         VibrationSystem.init();
@@ -973,8 +1411,9 @@
         const elements = {
             passwordTab: document.getElementById('password-tab'),
             passphraseTab: document.getElementById('passphrase-tab'),
-            passwordPanel: document.getElementById('password-panel'),
-            passphrasePanel: document.getElementById('passphrase-panel'),
+            keyfileTab: document.getElementById('keyfile-tab'),
+            masterTab: document.getElementById('master-tab'),
+            passwordDisplayArea: document.getElementById('passwordDisplayArea'),
             passwordOutput: document.getElementById('passwordOutput'),
             toggleVisibilityBtn: document.getElementById('toggleVisibilityBtn'),
             copyBtn: document.getElementById('copyBtn'),
@@ -999,6 +1438,32 @@
             generateBtnMobile: document.getElementById('generateBtnMobile'),
             generatePhraseBtn: document.getElementById('generatePhraseBtn'),
             generatePassphraseBtnMobile: document.getElementById('generatePassphraseBtnMobile'),
+            keyfileSize: document.getElementById('keyfileSize'),
+            keyfileSizeValue: document.getElementById('keyfileSizeValue'),
+            keyfileSizeInfo: document.getElementById('keyfileSizeInfo'),
+            keyfileSize64: document.getElementById('keyfileSize64'),
+            keyfileSize128: document.getElementById('keyfileSize128'),
+            keyfileSize256: document.getElementById('keyfileSize256'),
+            keyfileEntropyInfo: document.getElementById('keyfileEntropyInfo'),
+            keyfileEntropyBar: document.getElementById('keyfileEntropyBar'),
+            keyfileEntropyValue: document.getElementById('keyfileEntropyValue'),
+            keyfileEntropyDescription: document.getElementById('keyfileEntropyDescription'),
+            generateKeyfileBtn: document.getElementById('generateKeyfileBtn'),
+            masterPassword: document.getElementById('masterPassword'),
+            toggleMasterPasswordBtn: document.getElementById('toggleMasterPasswordBtn'),
+            masterIdentifier: document.getElementById('masterIdentifier'),
+            masterSalt: document.getElementById('masterSalt'),
+            toggleMasterSaltBtn: document.getElementById('toggleMasterSaltBtn'),
+            masterPasswordLength: document.getElementById('masterPasswordLength'),
+            masterLengthValue: document.getElementById('masterLengthValue'),
+            masterUseLowercase: document.getElementById('masterUseLowercase'),
+            masterUseUppercase: document.getElementById('masterUseUppercase'),
+            masterUseNumbers: document.getElementById('masterUseNumbers'),
+            masterUseSpecial: document.getElementById('masterUseSpecial'),
+            masterUseUnicode: document.getElementById('masterUseUnicode'),
+            masterExcludeAmbiguous: document.getElementById('masterExcludeAmbiguous'),
+            masterAtLeastOneOfEach: document.getElementById('masterAtLeastOneOfEach'),
+            generateMasterBtn: document.getElementById('generateMasterBtn'),
             notificationToast: document.getElementById('notificationToast'),
             toastTitle: document.getElementById('toastTitle'),
             toastMessage: document.getElementById('toastMessage')
@@ -1013,149 +1478,263 @@
          if(elements.notificationToast) {
             bootstrapToast = new bootstrap.Toast(elements.notificationToast, {
                 autohide: true,
-                delay: 3000
+                delay: 4000
             });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             hidePassword();
             generatePassword(true);
+            updateKeyfileSizeInfo();
 
-            elements.passwordTab?.addEventListener('click', function() {
-                if (state.mode !== 'password') {
-                    state.mode = 'password';
-                    VibrationSystem.vibrate();
-                    generatePassword();
-                }
-            });
-            elements.passphraseTab?.addEventListener('click', function() {
-                 if (state.mode !== 'passphrase') {
-                    state.mode = 'passphrase';
-                    VibrationSystem.vibrate();
-                    generatePassword();
-                 }
-            });
+            // Event listeners de abas
+            elements.passwordTab?.addEventListener('click', () => switchMode('password'));
+            elements.passphraseTab?.addEventListener('click', () => switchMode('passphrase'));
+            elements.keyfileTab?.addEventListener('click', () => switchMode('keyfile'));
+            elements.masterTab?.addEventListener('click', () => switchMode('master'));
 
+            // Handlers de input
             elements.passwordLength?.addEventListener('input', handlePasswordLengthChange);
             elements.lengthValue?.addEventListener('change', handlePasswordLengthInputChange);
-
             elements.wordCount?.addEventListener('input', handleWordCountChange);
             elements.wordCountValue?.addEventListener('change', handleWordCountInputChange);
+            elements.capitalization?.addEventListener('change', () => generatePassword());
+            elements.separator?.addEventListener('change', () => generatePassword());
+            elements.keyfileSize?.addEventListener('input', handleKeyfileSizeChange);
+            elements.keyfileSizeValue?.addEventListener('change', handleKeyfileSizeInputChange);
+            elements.keyfileSize64?.addEventListener('click', () => setKeyfileSize(64));
+            elements.keyfileSize128?.addEventListener('click', () => setKeyfileSize(128));
+            elements.keyfileSize256?.addEventListener('click', () => setKeyfileSize(256));
+            elements.generateKeyfileBtn?.addEventListener('click', handleGenerateKeyfile);
 
-            elements.capitalization?.addEventListener('change', generatePassword);
-            elements.separator?.addEventListener('change', generatePassword);
-
-            const charTypeCheckboxes = [
-                elements.useLowercase, elements.useUppercase, elements.useNumbers,
-                elements.useSpecial, elements.useSpaces, elements.useUnicode
-            ].filter(el => el);
-
-             charTypeCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    const baseTypesChecked = [
-                        elements.useLowercase, elements.useUppercase,
-                        elements.useNumbers, elements.useSpecial
-                    ].filter(el => el).some(cb => cb.checked);
-
-                    if (!baseTypesChecked && !elements.useSpaces?.checked && !elements.useUnicode?.checked) {
-                        if (elements.useLowercase) elements.useLowercase.checked = true;
-                        showNotification('Aviso', 'Pelo menos um tipo de caractere deve ser selecionado.', 'warning');
-                    }
-                    generatePassword();
-                });
-            });
-
-             elements.atLeastOneOfEach?.addEventListener('change', generatePassword);
-             elements.excludeAmbiguous?.addEventListener('change', generatePassword);
-
+            // Handlers de botões
             elements.toggleVisibilityBtn?.addEventListener('click', togglePasswordVisibility);
             elements.copyBtn?.addEventListener('click', handleCopyPassword);
-
             elements.generateBtn?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
             elements.generateBtnMobile?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
             elements.generatePhraseBtn?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
             elements.generatePassphraseBtnMobile?.addEventListener('click', () => { VibrationSystem.vibrate(); generatePassword(); });
+
+            // Checkboxes de caracteres
+            const charTypeCheckboxes = [elements.useLowercase, elements.useUppercase, elements.useNumbers, elements.useSpecial, elements.useSpaces, elements.useUnicode];
+            charTypeCheckboxes.forEach(checkbox => checkbox?.addEventListener('change', () => {
+                const atLeastOneChecked = [elements.useLowercase, elements.useUppercase, elements.useNumbers, elements.useSpecial, elements.useSpaces, elements.useUnicode].some(cb => cb?.checked);
+                if (!atLeastOneChecked) {
+                    elements.useLowercase.checked = true;
+                    showNotification('Aviso', 'Pelo menos um tipo de caractere deve ser selecionado.', 'warning');
+                }
+                generatePassword();
+            }));
+            elements.atLeastOneOfEach?.addEventListener('change', () => generatePassword());
+            elements.excludeAmbiguous?.addEventListener('change', () => generatePassword());
+
+            // --- Handlers Modo Mestre ---
+            elements.masterPasswordLength?.addEventListener('input', handleMasterPasswordLengthChange);
+            elements.masterLengthValue?.addEventListener('change', handleMasterPasswordLengthInputChange);
+            elements.toggleMasterPasswordBtn?.addEventListener('click', () => toggleInputVisibility(elements.masterPassword, elements.toggleMasterPasswordBtn));
+            elements.toggleMasterSaltBtn?.addEventListener('click', () => toggleInputVisibility(elements.masterSalt, elements.toggleMasterSaltBtn));
+            elements.generateMasterBtn?.addEventListener('click', handleGenerateMasterPassword);
         });
 
-        function handlePasswordLengthChange() {
-            const value = elements.passwordLength.value;
-            if (elements.lengthValue) elements.lengthValue.value = value;
+        function switchMode(newMode) {
+            if (state.mode === newMode) return;
+            state.mode = newMode;
             VibrationSystem.vibrate();
-            generatePassword();
-        }
 
-        function handlePasswordLengthInputChange() {
-            let value = parseInt(elements.lengthValue.value);
-            const min = parseInt(elements.passwordLength?.min || '8');
-            const max = parseInt(elements.passwordLength?.max || '128');
+            if (newMode === 'keyfile') {
+                elements.passwordDisplayArea.style.display = 'none';
+            } else {
+                elements.passwordDisplayArea.style.display = 'block';
+            }
 
-            if (isNaN(value) || value < min) value = min;
-            if (value > max) value = max;
-
-            elements.lengthValue.value = value;
-            if (elements.passwordLength) elements.passwordLength.value = value;
-            VibrationSystem.vibrate();
-            generatePassword();
-        }
-
-         function handleWordCountChange() {
-            const value = elements.wordCount.value;
-            if (elements.wordCountValue) elements.wordCountValue.value = value;
-            VibrationSystem.vibrate();
-            generatePassword();
-        }
-
-        function handleWordCountInputChange() {
-             let value = parseInt(elements.wordCountValue.value);
-             const min = parseInt(elements.wordCount?.min || '3');
-             const max = parseInt(elements.wordCount?.max || '22');
-
-             if (isNaN(value) || value < min) value = min;
-             if (value > max) value = max;
-
-             elements.wordCountValue.value = value;
-             if (elements.wordCount) elements.wordCount.value = value;
-             VibrationSystem.vibrate();
-             generatePassword();
-        }
-
-         function togglePasswordVisibility() {
-             if (state.passwordVisible) {
-                 hidePassword();
-             } else {
-                 showPassword();
-                 setTimeout(hidePassword, 10000);
-                 showNotification('Aviso', 'Senha será ocultada em 10 segundos.', 'info');
-             }
-             VibrationSystem.vibrate(20);
-         }
-
-        async function handleCopyPassword() {
-            if (!elements.passwordOutput || !elements.passwordOutput.value) return;
-
-            try {
-                await navigator.clipboard.writeText(elements.passwordOutput.value);
-                showNotification('Sucesso', 'Copiado para a área de transferência!');
-                VibrationSystem.vibrate(50);
-                animateCopyButton(elements.copyBtn);
-                 setTimeout(() => generatePassword(true), 500);
-            } catch (err) {
-                console.error('Erro ao copiar senha:', err);
-                showNotification('Erro', 'Falha ao copiar. Verifique permissões.', 'danger');
+            if (newMode === 'password' || newMode === 'passphrase') {
+                generatePassword(true);
+            } else if (newMode === 'master') {
+                elements.passwordOutput.value = '';
+                updateEntropyDisplay(0);
             }
         }
 
+        function handlePasswordLengthChange() {
+            elements.lengthValue.value = elements.passwordLength.value;
+            generatePassword();
+            VibrationSystem.vibrate();
+        }
+
+        function handlePasswordLengthInputChange() {
+            elements.passwordLength.value = elements.lengthValue.value;
+            generatePassword();
+            VibrationSystem.vibrate();
+        }
+
+         function handleWordCountChange() {
+            elements.wordCountValue.value = elements.wordCount.value;
+            generatePassword();
+            VibrationSystem.vibrate();
+        }
+
+        function handleWordCountInputChange() {
+            elements.wordCount.value = elements.wordCountValue.value;
+            generatePassword();
+            VibrationSystem.vibrate();
+        }
+
+        function handleKeyfileSizeChange() {
+            elements.keyfileSizeValue.value = elements.keyfileSize.value;
+            updateKeyfileSizeInfo();
+            VibrationSystem.vibrate();
+        }
+
+        function handleKeyfileSizeInputChange() {
+            elements.keyfileSize.value = elements.keyfileSizeValue.value;
+            updateKeyfileSizeInfo();
+            VibrationSystem.vibrate();
+        }
+
+        function setKeyfileSize(size) {
+            elements.keyfileSize.value = size;
+            elements.keyfileSizeValue.value = size;
+            updateKeyfileSizeInfo();
+            VibrationSystem.vibrate();
+        }
+
+        function handleGenerateKeyfile() {
+            const size = parseInt(elements.keyfileSizeValue.value || '64');
+            try {
+                const keyData = generateBinaryKey(size);
+                downloadKeyfile(keyData, 'keyfile.bin');
+                showNotification('Sucesso', `Arquivo keyfile.bin de ${size} bytes gerado e baixado!`);
+                VibrationSystem.vibrate(50);
+                if (elements.keyfileEntropyInfo) {
+                    elements.keyfileEntropyInfo.style.display = 'flex';
+                    setTimeout(() => {
+                        elements.keyfileEntropyInfo.style.display = 'none';
+                    }, 5000);
+                }
+            } catch (error) {
+                showNotification('Erro', 'Falha ao gerar o arquivo de chave.', 'danger');
+            }
+        }
+
+        function handleMasterPasswordLengthChange() {
+            elements.masterLengthValue.value = elements.masterPasswordLength.value;
+            VibrationSystem.vibrate();
+        }
+
+        function handleMasterPasswordLengthInputChange() {
+            elements.masterPasswordLength.value = elements.masterLengthValue.value;
+            VibrationSystem.vibrate();
+        }
+
+        async function handleGenerateMasterPassword() {
+            const masterPassword = elements.masterPassword.value;
+            const identifier = elements.masterIdentifier.value;
+            const personalSalt = elements.masterSalt.value;
+            const length = parseInt(elements.masterLengthValue.value);
+
+            if (!masterPassword || !identifier) {
+                showNotification('Atenção', 'Senha mestra e identificador são obrigatórios.', 'warning');
+                return;
+            }
+
+            const options = {
+                useLowercase: elements.masterUseLowercase.checked,
+                useUppercase: elements.masterUseUppercase.checked,
+                useNumbers: elements.masterUseNumbers.checked,
+                useSpecial: elements.masterUseSpecial.checked,
+                useUnicode: elements.masterUseUnicode.checked,
+                excludeAmbiguous: elements.masterExcludeAmbiguous.checked,
+                atLeastOneOfEach: elements.masterAtLeastOneOfEach.checked
+            };
+
+            elements.generateMasterBtn.disabled = true;
+            elements.generateMasterBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Gerando...';
+
+            try {
+                const password = await generateDeterministicPassword(masterPassword, identifier, personalSalt, length, options);
+                elements.passwordOutput.value = password;
+                const entropy = calculatePasswordEntropy(password, options);
+                updateEntropyDisplay(entropy);
+                showNotification('Sucesso', 'Senha determinística gerada!');
+            } catch (error) {
+                showNotification('Erro', error.message, 'danger');
+            } finally {
+                elements.generateMasterBtn.disabled = false;
+                elements.generateMasterBtn.innerHTML = '<i class="fas fa-key me-2"></i>Gerar Senha Determinística';
+            }
+        }
+
+        function togglePasswordVisibility() {
+             state.passwordVisible = !state.passwordVisible;
+             if (state.passwordVisible) {
+                 showPassword();
+                 setTimeout(hidePassword, 10000);
+                 showNotification('Aviso', 'A senha será ocultada em 10 segundos.', 'info');
+             } else {
+                 hidePassword();
+             }
+             VibrationSystem.vibrate(20);
+        }
+
+        function toggleInputVisibility(input, button) {
+            if (!input || !button) return;
+            const icon = button.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+        async function handleCopyPassword() {
+    const passwordToCopy = elements.passwordOutput.value;
+    if (!passwordToCopy) return;
+
+    try {
+        // 1. Copia o conteúdo para a área de transferência do sistema.
+        // Esta é a única interação com a área de transferência.
+        await navigator.clipboard.writeText(passwordToCopy);
+
+        // 2. Fornece feedback visual e tátil ao usuário.
+        showNotification('Sucesso', 'Copiado para a área de transferência!');
+        VibrationSystem.vibrate(50);
+        animateCopyButton(elements.copyBtn);
+
+        // 3. Executa a lógica de limpeza DENTRO DA PÁGINA para segurança.
+        // Isso NÃO apaga da área de transferência, apenas dos campos de input.
+        if (state.mode === 'master') {
+            // No Modo Mestre, limpa todos os campos de entrada sensíveis da tela
+            // após um breve delay para que o usuário veja a animação de cópia.
+            setTimeout(() => {
+                elements.passwordOutput.value = '';
+                elements.masterPassword.value = '';
+                elements.masterIdentifier.value = '';
+                elements.masterSalt.value = '';
+                updateEntropyDisplay(0); // Reseta a barra de entropia
+            }, 300);
+        }
+        else {
+            // Nos outros modos, simplesmente gera uma nova senha (silenciosamente)
+            // para substituir a que foi copiada, evitando que ela permaneça visível.
+            setTimeout(() => generatePassword(true), 500);
+        }
+
+    } catch (err) {
+        // Trata possíveis erros, como a permissão para a área de transferência ser negada.
+        console.error('Erro ao copiar senha:', err);
+        showNotification('Erro', 'Falha ao copiar. Verifique as permissões.', 'danger');
+    }
+}
         function showPassword() {
-            if (!elements.passwordOutput || !elements.toggleVisibilityBtn) return;
-             elements.passwordOutput.type = 'text';
+            if (!elements.passwordOutput) return;
              elements.passwordOutput.style.webkitTextSecurity = 'none';
              elements.toggleVisibilityBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
              state.passwordVisible = true;
         }
 
         function hidePassword() {
-            if (!elements.passwordOutput || !elements.toggleVisibilityBtn) return;
-             elements.passwordOutput.type = 'password';
+            if (!elements.passwordOutput) return;
              elements.passwordOutput.style.webkitTextSecurity = 'disc';
              elements.toggleVisibilityBtn.innerHTML = '<i class="fas fa-eye"></i>';
              state.passwordVisible = false;
@@ -1164,134 +1743,98 @@
         function animateCopyButton(button) {
             if (!button) return;
             button.classList.add('copied');
-            setTimeout(() => {
-                button.classList.remove('copied');
-            }, 1000);
+            setTimeout(() => button.classList.remove('copied'), 1000);
         }
 
         function updateEntropyDisplay(entropy) {
             if (!elements.entropyBar || !elements.entropyValue || !elements.entropyDescription) return;
-            
-            elements.entropyValue.textContent = `Entropia: ${Math.round(entropy)} bits`;
-            elements.entropyDescription.textContent = getEntropyDescription(entropy);
-            
-            const percentage = Math.min(100, (entropy / 128) * 100);
+
+            const roundedEntropy = Math.round(entropy);
+            elements.entropyValue.textContent = `Entropia: ${roundedEntropy} bits`;
+            elements.entropyDescription.textContent = getEntropyDescription(roundedEntropy);
+
+            const percentage = Math.min(100, (roundedEntropy / 128) * 100);
             elements.entropyBar.style.width = `${percentage}%`;
-            
+
             let colorClass = 'bg-danger';
-            if (entropy >= 100) colorClass = 'bg-success';
-            else if (entropy >= 80) colorClass = 'bg-warning';
-            else if (entropy >= 60) colorClass = 'bg-info';
-            
+            if (roundedEntropy >= 128) colorClass = 'bg-success';
+            else if (roundedEntropy >= 80) colorClass = 'bg-warning';
+            else if (roundedEntropy >= 60) colorClass = 'bg-info';
+
             elements.entropyBar.className = `progress-bar ${colorClass}`;
         }
 
         function showNotification(title, message, type = 'success') {
             if (!elements.toastTitle || !elements.toastMessage || !bootstrapToast) return;
-            
-            elements.toastTitle.textContent = title;
-            elements.toastMessage.textContent = message;
-            
-            let icon = 'fas fa-check-circle';
-            if (type === 'warning') icon = 'fas fa-exclamation-triangle';
-            else if (type === 'danger') icon = 'fas fa-times-circle';
-            else if (type === 'info') icon = 'fas fa-info-circle';
-            
+
+            let icon = 'fas fa-check-circle text-success';
+            if (type === 'warning') icon = 'fas fa-exclamation-triangle text-warning';
+            else if (type === 'danger') icon = 'fas fa-times-circle text-danger';
+            else if (type === 'info') icon = 'fas fa-info-circle text-info';
+
             elements.toastTitle.innerHTML = `<i class="${icon} me-2"></i>${title}`;
-            
+            elements.toastMessage.textContent = message;
+
             bootstrapToast.show();
         }
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then((registration) => {
-                        console.log('Service Worker registrado com sucesso:', registration.scope);
-                        
-                        registration.addEventListener('updatefound', () => {
-                            const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed') {
-                                    if (navigator.serviceWorker.controller) {
-                                        showNotification('Atualização', 'Nova versão disponível. Recarregue a página.', 'info');
-                                    }
-                                }
-                            });
-                        });
-                    })
-                    .catch((error) => {
-                        console.log('Falha ao registrar Service Worker:', error);
-                    });
-            });
-        }
-
+        // Lógica botão instalação PWA 
         let deferredPrompt;
-        let installButton;
+        const installPwaContainer = document.getElementById('installPwaContainer');
+        const installPwaBtn = document.getElementById('installPwaBtn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            
-            if (!installButton) {
-                createInstallButton();
+            // Mostrar o botão de instalação 
+            if (installPwaContainer) {
+                installPwaContainer.classList.remove('d-none');
             }
         });
 
-        function createInstallButton() {
-            installButton = document.createElement('button');
-            installButton.className = 'btn btn-outline-primary btn-sm position-fixed';
-            installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 50px; padding: 8px 16px;';
-            installButton.innerHTML = '<i class="fas fa-download me-1"></i>Instalar App';
-            installButton.title = 'Instalar como aplicativo';
-            
-            installButton.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`Resultado da instalação: ${outcome}`);
-                    deferredPrompt = null;
-                    installButton.remove();
+        if (installPwaBtn) {
+            installPwaBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) {
+                    showNotification('Aviso', 'A instalação não está disponível neste momento.', 'warning');
+                    return;
+                }
+
+                deferredPrompt.prompt();
+
+                const { outcome } = await deferredPrompt.userChoice;
+
+                if (outcome === 'accepted') {
+                    showNotification('Sucesso', 'Aplicativo instalado com sucesso!', 'success');
+                    VibrationSystem.vibrate(100);
+                } else {
+                    showNotification('Info', 'Instalação cancelada pelo usuário.', 'info');
+                }
+
+                deferredPrompt = null;
+
+                if (installPwaContainer) {
+                    installPwaContainer.classList.add('d-none');
                 }
             });
-            
-            document.body.appendChild(installButton);
         }
 
         window.addEventListener('appinstalled', () => {
-            console.log('PWA foi instalado');
-            if (installButton) {
-                installButton.remove();
+            if (installPwaContainer) {
+                installPwaContainer.classList.add('d-none');
             }
+            showNotification('Sucesso', 'Aplicativo instalado e pronto para uso!', 'success');
             deferredPrompt = null;
         });
 
-        function isPWA() {
-            return window.matchMedia('(display-mode: standalone)').matches || 
-                   window.navigator.standalone === true;
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('Service Worker registrado.', reg);
+                }).catch(err => {
+                    console.log('Falha ao registrar Service Worker:', err);
+                });
+            });
         }
-
-        if (isPWA()) {
-            document.documentElement.classList.add('pwa-mode');
-            console.log('Rodando como PWA');
-        }
-
-        window.addEventListener('load', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const mode = urlParams.get('mode');
-            
-            if (mode === 'password') {
-                const passwordTab = document.getElementById('password-tab');
-                if (passwordTab) {
-                    passwordTab.click();
-                }
-            } else if (mode === 'passphrase') {
-                const passphraseTab = document.getElementById('passphrase-tab');
-                if (passphraseTab) {
-                    passphraseTab.click();
-                }
-            }
-        });
     </script>
 </body>
 </html>
-
