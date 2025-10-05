@@ -61,7 +61,7 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
 O GeNekyl vai além da simples geração, incorporando proteções ativas que minimizam riscos durante o uso da ferramenta:
 
 -   **Segurança Pós-Cópia Aprimorada:** A segurança não termina ao clicar em "copiar".
-    -   **No Modo Mestre:** Os campos sensíveis são **imediatamente limpos** da tela após a cópia, garantindo que sua senha mestra e identificador não fiquem expostos.
+    -   **No Modo Mestre:** Conforme mencionado, os campos sensíveis são **imediatamente limpos** da tela após a cópia, garantindo que sua senha mestra e identificador não fiquem expostos.
     -   **Nos Outros Modos:** Ao copiar uma senha ou frase secreta, uma **nova é gerada automaticamente** na tela após um breve instante. Isso impede que a credencial que está na sua área de transferência permaneça visível, protegendo-o contra olhares indiscretos (*shoulder surfing*).
 
 -   **Ocultação Automática por Temporizador:** Para minimizar a exposição, ao clicar no ícone de "olho" para revelar uma senha, um **temporizador de 10 segundos** a oculta novamente de forma automática. É uma camada extra de proteção fundamental contra distrações do dia a dia.
