@@ -22,6 +22,24 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
 | :---: | :---: |
 | ![Frase Secreta](https://files.manuscdn.com/user_upload_by_module/session_file/310419663028595840/KtYDoeWNKPfzJoJd.jpg) | ![Arquivo de Chave](https://files.manuscdn.com/user_upload_by_module/session_file/310419663028595840/RpayiacLRquzQFNg.jpg) |
 
+### 💡 **Guia de Uso Rápido**
+
+-   **Precisa de uma senha forte AGORA?**
+    1.  Na aba **"Senha"**, ajuste o controle deslizante **"Tamanho da Senha"** para 20 ou mais.
+    2.  Verifique se as opções de caracteres (maiúsculas, números, etc.) estão ativadas.
+    3.  Clique em **"Gerar"**. Simples assim.
+
+-   **Quer uma senha mestra fácil de lembrar e ultra-segura?**
+    1.  Vá para a aba **"Frase Secreta"**.
+    2.  Selecione o modo **"Diceware"** ou **"Híbrido"** e ajuste o **"Número de Palavras"** para 7 ou mais.
+    3.  Clique em **"Gerar"** e memorize a frase. Use-a como sua nova senha mestra.
+
+-   **Cansado de salvar senhas para cada site?**
+    1.  Vá para a aba **"Modo Mestre"**.
+    2.  Crie e memorize sua **"Senha Mestra"** (use o método acima!).
+    3.  No campo **"Identificador"**, digite o nome do site (ex: `google.com`).
+    4.  Clique em **"Gerar Senha Determinística"**. A mesma combinação sempre produzirá a mesma senha, sem precisar salvá-la em lugar nenhum.
+
 ## ✨ Pontos-Chave e Funcionalidades
 
 - **Totalmente Client-Side:** A sua privacidade é a prioridade máxima. Nenhuma informação é transmitida pela internet.
@@ -33,7 +51,20 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
 - **Análise de Entropia em Tempo Real:** Uma barra de progresso visual e uma descrição detalhada informam a força da sua senha em bits, ajudando-o a tomar decisões de segurança informadas.
 - **Segurança Reforçada na Cópia:** Ao copiar uma senha no Modo Mestre, os campos sensíveis (senha mestra, identificador, salt) são automaticamente limpos da tela para evitar exposição acidental.
 - **Progressive Web App (PWA):** Instale o GeNekyl em seu dispositivo para acesso rápido e offline, como um aplicativo nativo.
-- **Interface Moderna e Responsiva:** Uma experiência de usuário limpa e intuitiva que se adapta a qualquer tamanho de tela, de desktops a smartphones.
+-   **Experiência de Aplicativo Nativo Real:** Além de ser um PWA, GeNekyl oferece:
+    -   **Interface Moderna e Responsiva:** Uma experiência de usuário limpa e intuitiva que se adapta a qualquer tamanho de tela, de desktops a smartphones.
+    -   Um **botão de instalação proativo** para facilitar a transição para um aplicativo offline.
+    -   **Feedback tátil (vibração)** em dispositivos móveis, tornando a interação mais intuitiva e confirmando ações importantes como geração e cópia.
+
+#### 🛡️ **Segurança Ativa e Proteção de Usabilidade**
+
+O GeNekyl vai além da simples geração, incorporando proteções ativas que minimizam riscos durante o uso da ferramenta:
+
+-   **Segurança Pós-Cópia Aprimorada:** A segurança não termina ao clicar em "copiar".
+    -   **No Modo Mestre:** Os campos sensíveis são **imediatamente limpos** da tela após a cópia, garantindo que sua senha mestra e identificador não fiquem expostos.
+    -   **Nos Outros Modos:** Ao copiar uma senha ou frase secreta, uma **nova é gerada automaticamente** na tela após um breve instante. Isso impede que a credencial que está na sua área de transferência permaneça visível, protegendo-o contra olhares indiscretos (*shoulder surfing*).
+
+-   **Ocultação Automática por Temporizador:** Para minimizar a exposição, ao clicar no ícone de "olho" para revelar uma senha, um **temporizador de 10 segundos** a oculta novamente de forma automática. É uma camada extra de proteção fundamental contra distrações do dia a dia.
 
 ## 🚀 O Crucial para o Bom Funcionamento
 
