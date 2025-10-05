@@ -769,14 +769,23 @@
                             </div>
 
                             <!-- Painel para geração de frases secretas. -->
+                          
                             <div class="tab-pane fade" id="passphrase-panel" role="tabpanel" aria-labelledby="passphrase-tab">
                                 <!-- Configuração do número de palavras da frase secreta. -->
                                 <div class="mb-3">
+                                <label for="passphraseMode" class="form-label">Modo de Geração</label>
+                                <select class="form-select bg-darker text-light" id="passphraseMode">
+                                    <option value="diceware" >Diceware (Palavras Reais)</option>
+                                    <option value="random">Aleatório (Palavras Inventadas)</option>
+                                    <option value="hybrid" selected >Híbrido (Mistura de Reais e Inventadas)</option>
+                                </select>
+                            </div>
+                                <div class="mb-3">
                                     <label for="wordCount" class="form-label d-flex justify-content-between align-items-center">
                                         <span>Número de Palavras</span>
-                                        <input type="number" class="size-display-input" id="wordCountValue" min="3" max="22" value="6"> 
+                                        <input type="number" class="size-display-input" id="wordCountValue" min="3" max="24" value="12"> 
                                     </label>
-                                    <input type="range" class="form-range" id="wordCount" min="3" max="22" value="6"> 
+                                    <input type="range" class="form-range" id="wordCount" min="3" max="24" value="12"> 
                                 </div>
 
                                 <!-- Botão de geração visível apenas em dispositivos móveis. -->
@@ -1011,7 +1020,7 @@
             </p>  
             <p class="text-light opacity-75"><small>Nenhuma informação sensível é armazenada ou enviada pela internet.</small></p>
                     <div class="mt-4 pt-3 border-top border-dark">
-            <a href="https://github.com/nekyl/GeNekyl/issues" 
+            <a href="https://github.com/nekyl/GeNekyl" 
                target="_blank" 
                rel="noopener noreferrer" 
                class="link-light text-decoration-none d-flex justify-content-center align-items-center gap-2">
@@ -1087,7 +1096,7 @@
         function generatePassword(silent = false) {
             let password = '';
             let entropy = 0;
-
+        
             if (state.mode === 'password') {
                 const options = {
                     length: parseInt(elements.lengthValue?.value || '24'),
@@ -1100,31 +1109,30 @@
                     excludeAmbiguous: elements.excludeAmbiguous?.checked || false,
                     atLeastOneOfEach: elements.atLeastOneOfEach?.checked || false
                 };
-
+        
                 password = generateRandomPassword(options);
                 entropy = calculatePasswordEntropy(password, options);
-            } else if (state.mode === 'passphrase') {
-                const options = {
-                    wordCount: parseInt(elements.wordCountValue?.value || '6'),
-                    capitalization: elements.capitalization?.value || 'lowercase',
-                    separator: elements.separator?.value || ' '
-                };
-
-                password = generateDicewarePassphrase(options);
-                const entropyPerWord = Math.log2(wordlist.length || 1);
-                entropy = options.wordCount * entropyPerWord;
+                // Cada sílaba (Consoante+Vogal) tem log₂(21*5) ≈ 6.7 bits de entropia
+                } else if (state.mode === 'passphrase') {
+                    password = generatePassphrase(); // Gera a frase primeiro
+                
+                    // Agora calcula a entropia da frase específica que foi gerada
+                    const separator = elements.separator?.value || ' ';
+                    entropy = calculatePassphraseEntropy(password, separator);
+            
+           
             } else if (state.mode === 'master') {
-                // No modo mestre, a geração é manual via botão
+                // No modo mestre, a geração é manual via botão, então não fazemos nada aqui.
                 return;
             }
-
-            // Atualizar UI
+        
+            // Atualizar a Interface do Usuário (UI)
             if (elements.passwordOutput) {
                 elements.passwordOutput.value = password;
             }
-
+        
             updateEntropyDisplay(entropy);
-
+        
             if (!silent && state.mode !== 'master') {
                 showNotification('Sucesso', 'Nova senha gerada!');
             }
@@ -1178,31 +1186,63 @@
 
             return password;
         }
+        
+        function generateRandomPseudoWord(minSyllables = 2, maxSyllables = 4) {
+    const VOGAIS = "aeiou";
+    const CONSOANTES = "bcdfghjklmnpqrstvwxyz";
+    let word = "";
+    const numSyllables = getRandomIntSecure(maxSyllables - minSyllables + 1) + minSyllables;
+
+    for (let i = 0; i < numSyllables; i++) {
+        const consoante = CONSOANTES[getRandomIntSecure(CONSOANTES.length)];
+        const vogal = VOGAIS[getRandomIntSecure(VOGAIS.length)];
+        word += consoante + vogal;
+    }
+    return word;
+}
 
         // Função para gerar frase secreta
-        function generateDicewarePassphrase({
-            wordCount = 6,
-            capitalization = 'lowercase',
-            separator = ' '
-        } = {}) {
-            if (wordlist.length === 0) {
+        function generatePassphrase(options = {}) {
+            // Pega os valores da UI
+            const wordCount = parseInt(elements.wordCountValue?.value || '6');
+            const capitalization = elements.capitalization?.value || 'lowercase';
+            const separator = elements.separator?.value || ' ';
+            const mode = document.getElementById('passphraseMode')?.value || 'diceware'; // Pega o novo modo
+        
+            if (wordlist.length === 0 && (mode === 'diceware' || mode === 'hybrid')) {
                 return "Erro: A lista de palavras não está disponível.";
             }
-
+        
             const words = [];
             for (let i = 0; i < wordCount; i++) {
-                const randomIndex = getRandomIntSecure(wordlist.length);
-                let word = wordlist[randomIndex];
-
-                switch (capitalization) {
-                    case 'uppercase':
-                        word = word.toUpperCase();
+                let word;
+        
+                // Lógica de seleção de modo
+                switch (mode) {
+                    case 'random':
+                        word = generateRandomPseudoWord(2, 3); // Gera palavras de 2-3 sílabas
                         break;
-                    case 'title':
-                        word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                    case 'hybrid':
+                        // Mistura 50/50
+                        if (getRandomIntSecure(2) === 0) {
+                            const randomIndex = getRandomIntSecure(wordlist.length);
+                            word = wordlist[randomIndex];
+                        } else {
+                            word = generateRandomPseudoWord(2, 3);
+                        }
                         break;
+                    case 'diceware':
                     default:
-                        word = word.toLowerCase();
+                        const randomIndex = getRandomIntSecure(wordlist.length);
+                        word = wordlist[randomIndex];
+                        break;
+                }
+        
+                // Aplica a capitalização
+                switch (capitalization) {
+                    case 'uppercase': word = word.toUpperCase(); break;
+                    case 'title': word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(); break;
+                    default: word = word.toLowerCase();
                 }
                 words.push(word);
             }
@@ -1229,6 +1269,33 @@
             const charSetSize = new Set(poolForEntropy).size;
              if (charSetSize === 0) return 0;
              return Math.log2(charSetSize) * password.length;
+        }
+        
+        
+        function calculatePassphraseEntropy(passphrase, separator) {
+            if (!passphrase) return 0;
+            
+            const words = passphrase.split(separator);
+            let totalEntropy = 0;
+            const mode = document.getElementById('passphraseMode')?.value || 'diceware';
+        
+            const entropyDiceware = Math.log2(wordlist.length || 1);
+            const entropyPerSyllable = Math.log2(21 * 5); // ~6.7 bits por sílaba C-V
+        
+            for (const word of words) {
+                // Verifica se a palavra veio do nosso dicionário (modo diceware ou híbrido)
+                // Usamos .toLowerCase() para garantir a correspondência
+                if (wordlist.includes(word.toLowerCase())) {
+                    totalEntropy += entropyDiceware;
+                } else {
+                    // Se não está no dicionário, é uma palavra inventada
+                    // Cada 2 caracteres formam uma sílaba (ex: 'so-li-ma' tem 6 chars / 3 sílabas)
+                    const numSyllables = word.length / 2;
+                    totalEntropy += numSyllables * entropyPerSyllable;
+                }
+            }
+        
+            return totalEntropy;
         }
 
         // Função de descrição da entropia
@@ -1500,6 +1567,7 @@
             elements.wordCountValue?.addEventListener('change', handleWordCountInputChange);
             elements.capitalization?.addEventListener('change', () => generatePassword());
             elements.separator?.addEventListener('change', () => generatePassword());
+            document.getElementById('passphraseMode')?.addEventListener('change', () => generatePassword());
             elements.keyfileSize?.addEventListener('input', handleKeyfileSizeChange);
             elements.keyfileSizeValue?.addEventListener('change', handleKeyfileSizeInputChange);
             elements.keyfileSize64?.addEventListener('click', () => setKeyfileSize(64));
