@@ -10,7 +10,7 @@ Construído como um Progressive Web App (PWA), o GeNekyl oferece uma experiênci
 - [Acesso e Demonstração](#-acesso-e-demonstração)
 - [Guia de Uso Rápido](#-guia-de-uso-rápido)
 - [Pontos-Chave e Funcionalidades](#-pontos-chave-e-funcionalidades)
-- [Segurança Ativa e Proteção de Usabilidade](#segurança-ativa-e-proteção-de-usabilidade)
+- [Segurança Ativa e Proteção de Usabilidade](#-segurança-ativa-e-proteção-de-usabilidade)
 - [O Crucial para o Bom Funcionamento](#-o-crucial-para-o-bom-funcionamento)
 - [Como Aproveitar ao Máximo o Modo Mestre](#-como-aproveitar-ao-máximo-o-modo-mestre)
 - [Contribuições](#-contribuições)
@@ -74,7 +74,7 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
   <a href="#-índice"><strong>&#x25B2; Voltar ao Índice</strong></a>
 </div>
 
-## 🛡️ Segurança Ativa e Proteção de Usabilidade
+## 🛡 Segurança Ativa e Proteção de Usabilidade
 
 O GeNekyl vai além da simples geração, incorporando proteções ativas que minimizam riscos durante o uso da ferramenta:
 
@@ -108,7 +108,10 @@ No modo de Frase Secreta, utilizamos uma lista de palavras baseada no método **
 - **Auditabilidade:** Uma lista pública pode ser auditada por especialistas em segurança para garantir que não contém palavras problemáticas ou padrões exploráveis.
 - **Segurança Combinatória:** A segurança não reside no segredo da lista, mas na vastidão matemática das combinações possíveis. Mesmo que um invasor tenha acesso à lista de palavras, para adivinhar uma frase secreta de, por exemplo, 6 palavras de uma lista de 7.776 palavras, ele teria que testar **7.776⁶ (mais de 221 sextilhões)** de combinações. Isso é computacionalmente inviável com a tecnologia atual e futura previsível.
 
-### 3. **Modo Mestre: Defesa em Profundidade com PBKDF2**
+### 3. **Modo Mestre: Defesa em Profundidad
+Segurança Ativa e Proteção de Usabilidade
+Segurança Ativa e Proteção de Usabilidade
+e com PBKDF2**
 O Modo Mestre é projetado para ser extremamente resistente a ataques de força bruta. Para isso, ele utiliza o **PBKDF2 (Password-Based Key Derivation Function 2)**, um algoritmo padrão da indústria para "esticar" senhas. As configurações são deliberadamente rigorosas:
 - **Função Hash:** **SHA-512**, um algoritmo de hash seguro e robusto.
 - **Iterações:** **1.000.000 de iterações**. Este número massivo de iterações torna o processo de derivação propositalmente lento. Para você, a geração é quase instantânea. Para um invasor tentando adivinhar sua senha mestra, cada tentativa exigiria um poder computacional significativo, tornando ataques de dicionário ou força bruta impraticáveis.
