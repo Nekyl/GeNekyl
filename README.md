@@ -10,6 +10,7 @@ Construído como um Progressive Web App (PWA), o GeNekyl oferece uma experiênci
 - [Acesso e Demonstração](#-acesso-e-demonstração)
 - [Guia de Uso Rápido](#-guia-de-uso-rápido)
 - [Pontos-Chave e Funcionalidades](#-pontos-chave-e-funcionalidades)
+- [Segurança Ativa e Proteção de Usabilidade](-segurança-ativa-e-proteção-de-usabilidade)
 - [O Crucial para o Bom Funcionamento](#-o-crucial-para-o-bom-funcionamento)
 - [Como Aproveitar ao Máximo o Modo Mestre](#-como-aproveitar-ao-máximo-o-modo-mestre)
 - [Contribuições](#-contribuições)
@@ -73,7 +74,7 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
   <a href="#-índice"><strong>&#x25B2; Voltar ao Índice</strong></a>
 </div>
 
-#### 🛡️ **Segurança Ativa e Proteção de Usabilidade**
+## 🛡️ Segurança Ativa e Proteção de Usabilidade
 
 O GeNekyl vai além da simples geração, incorporando proteções ativas que minimizam riscos durante o uso da ferramenta:
 
@@ -82,6 +83,10 @@ O GeNekyl vai além da simples geração, incorporando proteções ativas que mi
     -   **Nos Outros Modos:** Ao copiar uma senha ou frase secreta, uma **nova é gerada automaticamente** na tela após um breve instante. Isso impede que a credencial que está na sua área de transferência permaneça visível, protegendo-o contra olhares indiscretos (*shoulder surfing*).
 
 -   **Ocultação Automática por Temporizador:** Para minimizar a exposição, ao clicar no ícone de "olho" para revelar uma senha, um **temporizador de 10 segundos** a oculta novamente de forma automática. É uma camada extra de proteção fundamental contra distrações do dia a dia.
+
+<div align="right">
+  <a href="#-índice"><strong>&#x25B2; Voltar ao Índice</strong></a>
+</div>
 
 ## 🚀 O Crucial para o Bom Funcionamento
 
