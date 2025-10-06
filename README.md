@@ -49,6 +49,10 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
     3.  No campo **"Identificador"**, digite o nome do site (ex: `google.com`).
     4.  Clique em **"Gerar Senha Determinística"**. A mesma combinação sempre produzirá a mesma senha, sem precisar salvá-la em lugar nenhum.
 
+<div align="right">
+  <a href="#-índice"><strong>&#x25B2; Voltar ao Índice</strong></a>
+</div>
+
 ## ✨ Pontos-Chave e Funcionalidades
 
 - **Totalmente Client-Side:** A sua privacidade é a prioridade máxima. Nenhuma informação é transmitida pela internet.
@@ -64,6 +68,10 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
     -   **Interface Moderna e Responsiva:** Uma experiência de usuário limpa e intuitiva que se adapta a qualquer tamanho de tela, de desktops a smartphones.
     -   Um **botão de instalação proativo** para facilitar a transição para um aplicativo offline.
     -   **Feedback tátil (vibração)** em dispositivos móveis, tornando a interação mais intuitiva e confirmando ações importantes como geração e cópia.
+
+<div align="right">
+  <a href="#-índice"><strong>&#x25B2; Voltar ao Índice</strong></a>
+</div>
 
 #### 🛡️ **Segurança Ativa e Proteção de Usabilidade**
 
@@ -99,6 +107,10 @@ No modo de Frase Secreta, utilizamos uma lista de palavras baseada no método **
 O Modo Mestre é projetado para ser extremamente resistente a ataques de força bruta. Para isso, ele utiliza o **PBKDF2 (Password-Based Key Derivation Function 2)**, um algoritmo padrão da indústria para "esticar" senhas. As configurações são deliberadamente rigorosas:
 - **Função Hash:** **SHA-512**, um algoritmo de hash seguro e robusto.
 - **Iterações:** **1.000.000 de iterações**. Este número massivo de iterações torna o processo de derivação propositalmente lento. Para você, a geração é quase instantânea. Para um invasor tentando adivinhar sua senha mestra, cada tentativa exigiria um poder computacional significativo, tornando ataques de dicionário ou força bruta impraticáveis.
+
+<div align="right">
+  <a href="#-índice"><strong>&#x25B2; Voltar ao Índice</strong></a>
+</div>
 
 ## 🧠 Como Aproveitar ao Máximo o Modo Mestre
 
@@ -142,6 +154,10 @@ O "Salt Pessoal" é uma camada adicional de segurança que pode ser única para 
 
 Se você usar um salt diferente para o `bancoY.com.br` (como o mês de abertura da conta, por exemplo), mesmo que um invasor descubra todos os segredos da sua conta do banco X , ele **não poderá** gerar a senha do banco Y.
 
+<div align="right">
+  <a href="#-índice"><strong>&#x25B2; Voltar ao Índice</strong></a>
+</div>
+
 ## 🤝 Contribuições
 
 Contribuições são bem-vindas! Se você encontrar um bug, tiver uma sugestão de melhoria ou quiser adicionar uma nova funcionalidade, sinta-se à vontade para abrir uma *Issue* ou enviar um *Pull Request*.
@@ -153,3 +169,7 @@ Este projeto é licenciado sob a **Creative Commons Attribution-NonCommercial-Sh
 [![Licença CC BY-NC-SA 4.0](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 Para ver uma cópia desta licença, visite [http://creativecommons.org/licenses/by-nc-sa/4.0/](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+<p align="center">
+  <small><a href="#-índice">Subir para o Índice</a></small>
+</p>
