@@ -10,7 +10,7 @@ Construído como um Progressive Web App (PWA), o GeNekyl oferece uma experiênci
 - [Acesso e Demonstração](#-acesso-e-demonstração)
 - [Guia de Uso Rápido](#-guia-de-uso-rápido)
 - [Pontos-Chave e Funcionalidades](#-pontos-chave-e-funcionalidades)
-- [Segurança Ativa e Proteção de Usabilidade](#-segurança-ativa-e-proteção-de-usabilidade)
+- [Segurança Ativa e Proteção de Usabilidade](#segurança-ativa-e-proteção-de-usabilidade)
 - [O Crucial para o Bom Funcionamento](#-o-crucial-para-o-bom-funcionamento)
 - [Como Aproveitar ao Máximo o Modo Mestre](#-como-aproveitar-ao-máximo-o-modo-mestre)
 - [Contribuições](#-contribuições)
