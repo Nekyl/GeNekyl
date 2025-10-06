@@ -6,6 +6,15 @@
 
 Construído como um Progressive Web App (PWA), o GeNekyl oferece uma experiência de aplicativo nativo, incluindo a capacidade de funcionar offline.
 
+## 📜 Índice
+- [Acesso e Demonstração](#-acesso-e-demonstração)
+- [Guia de Uso Rápido](#-guia-de-uso-rápido)
+- [Pontos-Chave e Funcionalidades](#-pontos-chave-e-funcionalidades)
+- [O Crucial para o Bom Funcionamento](#-o-crucial-para-o-bom-funcionamento)
+- [Como Aproveitar ao Máximo o Modo Mestre](#-como-aproveitar-ao-máximo-o-modo-mestre)
+- [Contribuições](#-contribuições)
+- [Licença](#-licença)
+
 ## 🚀 Acesso e Demonstração
 
 Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
