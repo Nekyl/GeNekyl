@@ -24,13 +24,13 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
 
 ## Screenshots
 
-| Gerador de Senhas | Modo Mestre |
+| Gerador de Senhas | Frase secreta |
 | :---: | :---: |
-| ![Gerador de Senhas](https://private-us-east-1.manuscdn.com/sessionFile/S6h26dbR2PCTpQGqc7HZoj/sandbox/eQHTlw2Oxz2QD41aJGViQN-images_1759663562823_na1fn_L2hvbWUvdWJ1bnR1LzE2MDAyMw.jpg?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvUzZoMjZkYlIyUENUcFFHcWM3SFpvai9zYW5kYm94L2VRSFRsdzJPeHoyUUQ0MWFKR1ZpUU4taW1hZ2VzXzE3NTk2NjM1NjI4MjNfbmExZm5fTDJodmJXVXZkV0oxYm5SMUx6RTJNREF5TXcuanBnIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=IQ0G2AmvufyCuB18iN8ZFYiFHPghs4kxp1R1JlLITPLTQUSqyWGMXxssojYHtL1EegTX72KNyXcnPj1nbEOx98730~m53crb73oKpCQl-Q6y~htm8s3RKyKN2c-AK-kwrin7VHZeW26oGAVITPL85a~kudsM3udLEoDNcZ7ROFdEcR3Fkh-qnlS164UKORcttQZRo5bl8gIWy6FwdTQ~M20u8kAg1EUOmruCjpdQI9sZVTnhQicCtc4XHtRnkvOs65Lqr0yNAIvLysb~419rqRdFNYc12sC~ja20Yq3eqIxMrsGOefFfZhWbK2x0Wm2a7iLhM8IrhjYa8jxdJjlAcg__) | ![Modo Mestre](https://private-us-east-1.manuscdn.com/sessionFile/S6h26dbR2PCTpQGqc7HZoj/sandbox/eQHTlw2Oxz2QD41aJGViQN-images_1759663562826_na1fn_L2hvbWUvdWJ1bnR1LzE2MDAyNQ.jpg?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvUzZoMjZkYlIyUENUcFFHcWM3SFpvai9zYW5kYm94L2VRSFRsdzJPeHoyUUQ0MWFKR1ZpUU4taW1hZ2VzXzE3NTk2NjM1NjI4MjZfbmExZm5fTDJodmJXVXZkV0oxYm5SMUx6RTJNREF5TlEuanBnIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=RNCfDqL8toIZZKeOcR~VinD6g03S~N0kU6MPuu1~RQXTFcLDUVba90FYorYwZzC7iUEHE07BIo188DI3m2SPucp-~N7-m94gPJ-YjZ~Dk7PzMgBHlA0Wlf3JODY2yWrcNuRBCrIGWoa3eyevmUUYZYumjyk~WEnV-pKneAi5krat8j4fjrtlgmNkIq4cceVMA4zu7hCKPOpmWabzq-ZStx-1ViJDxjdzh1WksByzE08l-Kjx3tAjvG5V69WJnv7udArqLRPGCA3C2TxKR~a3VUIAaG643hikabLGBmRrrUs8v9RcOMMxR9g-2g-p13hg3mCZwqPwAwAJZfriY93Myg__) |
+| ![Gerador de Senhas](https://github.com/Nekyl/GeNekyl/blob/main/assets/password.png) | ![Frase Secreta](https://github.com/Nekyl/GeNekyl/blob/main/assets/password.png) |
 
-| Frase Secreta | Arquivo de Chave |
+| Arquivo de Chave| Modo Mestre |
 | :---: | :---: |
-| ![Frase Secreta](https://files.manuscdn.com/user_upload_by_module/session_file/310419663028595840/KtYDoeWNKPfzJoJd.jpg) | ![Arquivo de Chave](https://files.manuscdn.com/user_upload_by_module/session_file/310419663028595840/RpayiacLRquzQFNg.jpg) |
+| ![Arquivo de Chave](https://github.com/Nekyl/GeNekyl/blob/main/assets/keyfile.png) | ![Modo Mestre](https://github.com/Nekyl/GeNekyl/blob/main/assets/master.png) |
 
 ### 💡 **Guia de Uso Rápido**
 
