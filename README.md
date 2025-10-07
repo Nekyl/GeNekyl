@@ -24,6 +24,14 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
 
 ## Screenshots
 
+| Gerador de Senhas | Frase secreta |
+| :---: | :---: |
+| ![Gerador de Senhas](https://github.com/Nekyl/GeNekyl/blob/main/assets/password.png) | ![Frase Secreta](https://github.com/Nekyl/GeNekyl/blob/main/assets/password.png) |
+
+| Arquivo de Chave| Modo Mestre |
+| :---: | :---: |
+| ![Arquivo de Chave](https://github.com/Nekyl/GeNekyl/blob/main/assets/keyfile.png) | ![Modo Mestre](https://github.com/Nekyl/GeNekyl/blob/main/assets/master.png) |
+
 
 ### 💡 **Guia de Uso Rápido**
 
