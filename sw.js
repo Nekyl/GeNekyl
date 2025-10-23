@@ -3,14 +3,13 @@ const STATIC_CACHE_NAME = 'gerador-senhas-static-v1.0.0';
 
 // Arquivos essenciais para cache
 const STATIC_ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './pass.json',
+  'index.html',
+  'manifest.json',
+  'pass.json',
   // CDN resources que serão cacheados quando acessados
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js'
+  'bootstrap/css/bootstrap.min.css',
+  'fontawesome/css/all.min.css',
+  'js/bootstrap.bundle.min.js'
 ];
 
 // Recursos opcionais (ícones que podem não existir)
