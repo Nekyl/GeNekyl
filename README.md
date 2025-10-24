@@ -26,11 +26,11 @@ Acesse a versão live, segura e totalmente funcional clicando abaixo: 👇🏻
 
 | Gerador de Senhas | Frase secreta |
 | :---: | :---: |
-| ![Gerador de Senhas](https://github.com/Nekyl/GeNekyl/blob/main/assets/password.png) | ![Frase Secreta](https://github.com/Nekyl/GeNekyl/blob/main/assets/passphrase.png) |
+| <img src="https://github.com/Nekyl/GeNekyl/blob/main/assets/password.png" alt="Gerador de Senhas" width="112px"> | <img src="https://github.com/Nekyl/GeNekyl/blob/main/assets/passphrase.png" alt="Frase Secreta" width="112px"> |
 
 | Arquivo de Chave| Modo Mestre |
 | :---: | :---: |
-| ![Arquivo de Chave](https://github.com/Nekyl/GeNekyl/blob/main/assets/keyfile.png) | ![Modo Mestre](https://github.com/Nekyl/GeNekyl/blob/main/assets/master.png) |
+| <img src="https://github.com/Nekyl/GeNekyl/blob/main/assets/keyfile.png" alt="Arquivo de Chave" width="112px"> | <img src="https://github.com/Nekyl/GeNekyl/blob/main/assets/master.png" alt="Modo Mestre" width="112px"> |
 
 
 ### 💡 **Guia de Uso Rápido**
