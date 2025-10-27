@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas Seguras</title>
+
+    <!-- Configurações de Progressive Web App (PWA). -->
+    <meta name="description" content="Crie senhas e frases secretas fortes e seguras localmente no seu dispositivo">
+    <meta name="theme-color" content="#121212">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GeradorSenhas">
+    <meta name="msapplication-TileColor" content="#6b57ff">
+    <meta name="msapplication-config" content="browserconfig.xml">
+
+    <!-- Link para o arquivo manifest do PWA. -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Ícones para dispositivos Apple. -->
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
+
+    <!-- Ícones de favoritos para diferentes tamanhos. -->
+    <link rel="icon" type="/image/png" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="icon" type="/image/png" sizes="512x512" href="icons/icon-512x512.png">
+
+    <!-- Importação do CSS do Bootstrap localmente. -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Importação do Font Awesome localmente. -->
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+
+
+    <!-- Estilos CSS personalizados da aplicação. -->
+    <style>
+
+        :root {
+            --primary: #6b57ff;
+            --primary-dark: #5040c9;
+            --secondary: #45caff;
+            --success: #2cd4a0;
+            --danger: #ff6b8e;
+            --warning: #ffbe45;
+            --dark: #121212;
+            --dark-subtle: #1f1f1f;
+            --darker: #2a2a2a;
+            --light: #efefef;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        .card {
+            background-color: var(--dark-subtle);
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .bg-darker {
+            background-color: var(--darker) !important;
+        }
+
+        .bg-dark-subtle {
+            background-color: var(--dark-subtle) !important;
+        }
+
+        .form-control, .form-select {
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(107, 87, 255, 0.25);
+            background-color: rgba(42, 42, 42, 0.8);
+        }
+
+                .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(107, 87, 255, 0.25);
+            background-color: rgba(42, 42, 42, 0.8);
+        }
+
+        .form-control::placeholder {
+            color: rgba(239, 239, 239, 0.6); 
+            opacity: 1; 
+        }
+
+        .input-group .btn {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        .input-group .btn {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        .form-range {
+            width: 100%;
+            height: 1.5rem;
+            padding: 0;
+            -webkit-appearance: none;
+            background-color: transparent;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background-color: var(--primary);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: -0.5rem;
+        }
+
+        .form-range::-webkit-slider-thumb:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .form-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 0.25rem;
+            background-color: var(--darker);
+            border-radius: 1rem;
+            cursor: pointer;
+        }
+
+        .form-check-input {
+            background-color: var(--darker);
+            border-color: var(--darker);
+            width: 3rem;
+            height: 1.5rem;
+            margin-top: 0.125rem;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .form-check-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(107, 87, 255, 0.25);
+        }
+
+        .form-switch .form-check-input {
+            border-radius: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 0.25rem rgba(107, 87, 255, 0.25);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #25b889;
+            border-color: #25b889;
+        }
+
+        .nav-pills .nav-link {
+            color: var(--light);
+            border-radius: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary);
+        }
+
+        .nav-pills .nav-link:not(.active):hover {
+            background-color: var(--darker);
+        }
+
+        .password-display-container {
+            display: flex;
+            align-items: stretch;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .password-field-wrapper {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        #passwordOutput {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            letter-spacing: 0.1rem;
+            border-radius: 0.5rem;
+            resize: none;
+            overflow-y: auto;
+            max-height: 150px;
+            min-height: 100px;
+            padding: 1rem 3rem 1rem 1rem;
+            line-height: 1.5;
+            color: #8cff8c;
+            width: 100%;
+        }
+
+        .password-actions {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .toggle-visibility-btn {
+            background: none;
+            border: none;
+            color: var(--light);
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-visibility-btn:hover {
+            color: var(--primary);
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .copy-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        .copy-btn.copied {
+            background: transparent !important;
+            color: #2cd4a0 !important;
+            transform: scale(1.2);
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .entropy-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            opacity: 0.9;
+        }
+
+        .entropy-meter {
+            width: 60%;
+        }
+
+        .entropy-meter small,
+        .entropy-description {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            color: var(--light);
+            opacity: 0.9;
+        }
+
+        .progress {
+            height: 0.5rem;
+            border-radius: 1rem;
+            margin-bottom: 0.25rem;
+            background-color: var(--darker);
+        }
+
+        .progress-bar {
+            border-radius: 1rem;
+            transition: var(--transition);
+        }
+
+        .toast {
+            background-color: var(--dark-subtle);
+            color: var(--light);
+            border-radius: 0.5rem;
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+            margin-top: 1rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.showing {
+            opacity: 1;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.hide {
+            opacity: 0;
+        }
+
+        .toast-header {
+            background-color: var(--dark-subtle);
+            color: var(--light);
+            border-bottom: 1px solid var(--darker);
+            padding: 0.75rem 1rem;
+        }
+
+        .toast-body {
+            padding: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .password-display-container {
+                position: relative;
+            }
+
+            .password-actions {
+                position: absolute;
+                right: 0.5rem;
+                top: 50%;
+                transform: translateY(-50%);
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+            }
+
+            #passwordOutput {
+                padding-right: 5rem;
+            }
+
+            .copy-btn {
+                width: 100%;
+                min-height: 2.5rem;
+            }
+
+            .entropy-info {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .entropy-meter {
+                width: 100%;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            #passwordOutput {
+                font-size: 1rem;
+                letter-spacing: 0.05rem;
+            }
+
+            .form-check-label {
+                font-size: 0.9rem;
+            }
+
+            .toast {
+                width: 90%;
+                margin: 0.5rem auto;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .size-display-input {
+            background-color: transparent;
+            border: none;
+            color: var(--light);
+            width: 50px;
+            text-align: right;
+            font-weight: 500;
+            padding: 0;
+            -moz-appearance: textfield;
+        }
+
+        .size-display-input::-webkit-outer-spin-button,
+        .size-display-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .size-display-input:focus {
+            outline: none;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            #generateBtnMobile {
+                margin: 1rem 0;
+                padding: 0.8rem;
+                font-size: 1.1rem;
+            }
+
+            .password-display-container {
+                margin-bottom: 0.5rem;
+            }
+
+            #passwordOutput {
+                font-size: 1rem;
+                min-height: 80px;
+                padding-right: 3.5rem;
+            }
+
+            .form-check-label {
+                font-size: 0.9rem;
+            }
+
+            .size-display-input {
+                font-size: 1.1rem;
+                width: 40px;
+            }
+        }
+
+        .keyfile-info {
+            background-color: var(--darker);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .keyfile-info h6 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .keyfile-info p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--success), #25b889);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, #25b889, var(--success));
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(44, 212, 160, 0.3);
+        }
+
+        .keyfile-size-info {
+            font-size: 0.85rem;
+            color: var(--light);
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .btn-install-pwa {
+            background: linear-gradient(135deg, #6b57ff, #8b5cf6);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(107, 87, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-install-pwa::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-install-pwa:hover {
+            background: linear-gradient(135deg, #5040c9, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 87, 255, 0.4);
+        }
+
+        .btn-install-pwa:hover::before {
+            left: 100%;
+        }
+
+        .btn-install-pwa:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(107, 87, 255, 0.3);
+        }
+
+        .btn-install-pwa i {
+            font-size: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-1px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .btn-install-pwa {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+                border-radius: 1.5rem;
+            }
+
+            .btn-install-pwa .install-text {
+                display: none;
+            }
+
+            .btn-install-pwa i {
+                margin-right: 0 !important;
+            }
+        }
+
+        @media (display-mode: standalone) {
+            #installPwaContainer {
+                display: none !important;
+            }
+        }
+
+    </style>
+</head>
+
+<body class="bg-dark text-light">
+    <div class="container py-4 d-flex flex-column" style="min-height: 100vh;">
+        <header class="text-center mb-5 position-relative">
+            <h1 class="display-4 fw-bold"><i class="fas fa-shield-alt text-primary me-2"></i>Gerador de Senhas</h1>
+            <p class="lead">Crie senhas, frases secretas e arquivos de chave seguros.</p>
+
+            <!-- Botão para instalar o PWA. -->
+            <div class="position-fixed bottom-0 end-0 p-3 d-none" id="installPwaContainer" style="z-index: 1050;">
+                <button class="btn-install-pwa" id="installPwaBtn" title="Instalar como aplicativo">
+                    <i class="fas fa-download me-2"></i>
+                    <span class="install-text">Instalar Aplicação</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Componente de notificação tipo Toast. -->
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+            <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="fas fa-bell me-2 text-primary"></i>
+                    <strong class="me-auto" id="toastTitle">Notificação</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toastMessage">
+                    Senha gerada com sucesso.
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center flex-grow-1">
+            <div class="col-lg-8">
+                <div class="card bg-dark-subtle text-light border-0 shadow-lg">
+                    <div class="card-header bg-dark-subtle border-0">
+                        <!-- Navegação por abas para diferentes modos de geração. -->
+                        <ul class="nav nav-pills nav-fill" id="modeTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="password-tab" data-bs-toggle="pill" data-bs-target="#password-panel" type="button" role="tab" aria-controls="password-panel" aria-selected="true">
+                                    <i class="fas fa-key me-2"></i>Senha
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="passphrase-tab" data-bs-toggle="pill" data-bs-target="#passphrase-panel" type="button" role="tab" aria-controls="passphrase-panel" aria-selected="false">
+                                    <i class="fas fa-quote-right me-2"></i>Frase Secreta
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="keyfile-tab" data-bs-toggle="pill" data-bs-target="#keyfile-panel" type="button" role="tab" aria-controls="keyfile-panel" aria-selected="false">
+    <i class="fas fa-file-shield me-2"></i>Arquivo de Chave
+</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="master-tab" data-bs-toggle="pill" data-bs-target="#master-panel" type="button" role="tab" aria-controls="master-panel" aria-selected="false">
+                                    <i class="fas fa-crown me-2"></i>Modo Mestre
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <!-- Área de exibição da senha ou frase secreta. -->
+                        <div class="mb-4" id="passwordDisplayArea">
+                            <div class="password-display-container">
+                                <div class="password-field-wrapper">
+
+                                    <textarea class="form-control bg-darker text-light" id="passwordOutput" readonly rows="3"></textarea>
+                                    <div class="password-actions">
+                                        <button class="toggle-visibility-btn" type="button" id="toggleVisibilityBtn" title="Mostrar/Ocultar Senha">
+                                            <i class="fas fa-eye"></i> 
+                                        </button>
+                                        <button class="copy-btn" type="button" id="copyBtn" title="Copiar para Área de Transferência">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="entropy-info">
+                                <div class="entropy-meter">
+                                    <div class="progress">
+                                        <div class="progress-bar" id="entropyBar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small id="entropyValue">Entropia: 0 bit</small>
+                                </div>
+                                <div class="entropy-description" id="entropyDescription"></div>
+                            </div>
+                        </div>
+
+                        <!-- Conteúdo dinâmico das abas. -->
+                        <div class="tab-content" id="generateTabContent">
+                            <!-- Painel para geração de senhas. -->
+                            <div class="tab-pane fade show active" id="password-panel" role="tabpanel" aria-labelledby="password-tab">
+                                <!-- Configuração do comprimento da senha. -->
+                                <div class="mb-3">
+                                    <label for="passwordLength" class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Tamanho da Senha</span>
+                                        <input type="number" class="size-display-input" id="lengthValue" min="8" max="128" value="24"> 
+                                    </label>
+                                    <input type="range" class="form-range" id="passwordLength" min="8" max="128" value="24"> 
+                                </div>
+
+                                <!-- Botão de geração visível apenas em dispositivos móveis. -->
+                                <div class="d-md-none mb-3">
+                                    <button class="btn btn-primary btn-lg w-100" id="generateBtnMobile">
+                                        <i class="fas fa-sync-alt me-2"></i>Gerar
+                                    </button>
+                                </div>
+
+                                <!-- Opções de tipos de caracteres para a senha. -->
+                                <div class="mb-3">
+                                    <label class="form-label">Tipos de Caracteres</label>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useLowercase" checked>
+                                                <label class="form-check-label" for="useLowercase">Minúsculas (a-z)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useUppercase" checked>
+                                                <label class="form-check-label" for="useUppercase">Maiúsculas (A-Z)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useNumbers" checked>
+                                                <label class="form-check-label" for="useNumbers">Números (0-9)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useSpecial" checked>
+                                                <label class="form-check-label" for="useSpecial">Especiais (!@#$%^&*...)</label> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useSpaces">
+                                                <label class="form-check-label" for="useSpaces">Espaços</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="useUnicode"> 
+                                                <label class="form-check-label" for="useUnicode">Unicode (Complexos)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <!-- Opções adicionais de caracteres. -->
+                                     <div class="row mt-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="excludeAmbiguous" checked>
+                                                <label class="form-check-label" for="excludeAmbiguous">Excluir Ambíguos (Il1O0...)</label>
+                                            </div>
+                                        </div>
+                                         <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="atLeastOneOfEach" checked>
+                                                <label class="form-check-label" for="atLeastOneOfEach">Garantir um de cada tipo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Botão de geração visível apenas em desktops. -->
+                                <div class="d-none d-md-block">
+                                    <div class="d-grid gap-2 mt-4">
+                                        <button class="btn btn-primary btn-lg" id="generateBtn">
+                                            <i class="fas fa-sync-alt me-2"></i>Gerar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Painel para geração de frases secretas. -->
+                          
+                            <div class="tab-pane fade" id="passphrase-panel" role="tabpanel" aria-labelledby="passphrase-tab">
+                                <!-- Configuração do número de palavras da frase secreta. -->
+                                <div class="mb-3">
+                                <label for="passphraseMode" class="form-label">Modo de Geração</label>
+                                <select class="form-select bg-darker text-light" id="passphraseMode">
+                                    <option value="diceware" >Diceware (Palavras Reais)</option>
+                                    <option value="random">Aleatório (Palavras Inventadas)</option>
+                                    <option value="hybrid" selected >Híbrido (Mistura de Reais e Inventadas)</option>
+                                </select>
+                            </div>
+                                <div class="mb-3">
+                                    <label for="wordCount" class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Número de Palavras</span>
+                                        <input type="number" class="size-display-input" id="wordCountValue" min="3" max="24" value="12"> 
+                                    </label>
+                                    <input type="range" class="form-range" id="wordCount" min="3" max="24" value="12"> 
+                                </div>
+
+                                <!-- Botão de geração visível apenas em dispositivos móveis. -->
+                                <div class="d-md-none mb-3">
+                                    <button class="btn btn-primary btn-lg w-100" id="generatePassphraseBtnMobile">
+                                        <i class="fas fa-sync-alt me-2"></i>Gerar
+                                    </button>
+                                </div>
+
+                                <!-- Configuração da capitalização das palavras das palavras da frase secreta. -->
+                                <div class="mb-3">
+                                    <label for="capitalization" class="form-label">Capitalização</label>
+                                    <select class="form-select bg-darker text-light" id="capitalization">
+                                        <option value="lowercase" selected>minúsculas</option>
+                                        <option value="uppercase">MAIÚSCULAS</option>
+                                        <option value="title">Capitalização De Título</option>
+                                    </select>
+                                </div>
+
+                                <!-- Configuração do separador entre as palavras da frase secreta. -->
+                                <div class="mb-3">
+                                    <label for="separator" class="form-label">Separador de Palavras</label>
+                                    <select class="form-select bg-darker text-light" id="separator">
+                                        <option value="-">Hífen (-)</option>
+                                        <option value=".">Ponto (.)</option>
+                                        <option value=" " selected>Espaço ( )</option>
+                                        <option value="_">Sublinhado (_)</option>
+                                        <option value="">Nenhum</option>
+                                        <option value=",">Vírgula (,)</option>
+                                        <option value="!">Exclamação (!)</option>
+                                        <option value="@">Arroba (@)</option>
+                                        <option value="#">Jogo da Velha (#)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Botão de geração visível apenas em desktops. -->
+                                <div class="d-none d-md-block">
+                                    <div class="d-grid gap-2 mt-4">
+                                        <button class="btn btn-primary btn-lg" id="generatePhraseBtn">
+                                            <i class="fas fa-sync-alt me-2"></i>Gerar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Painel para geração de arquivos de chave. -->
+                            <div class="tab-pane fade" id="keyfile-panel" role="tabpanel" aria-labelledby="keyfile-tab">
+
+                                <div class="keyfile-info">
+                                    <h6><i class="fas fa-info-circle me-2"></i>Sobre Arquivos de Chave</h6>
+                                    <p>Arquivos de chave são sequências de bytes aleatórios criptograficamente seguros, ideais para uso com gerenciadores de senha como KeePass. Eles oferecem segurança máxima quando usados como fator de autenticação adicional.</p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="keyfileSize" class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Tamanho da Chave</span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="number" class="size-display-input" id="keyfileSizeValue" min="32" max="1024" value="64">
+                                            <small class="text-muted">bytes</small>
+                                        </div>
+                                    </label>
+                                    <input type="range" class="form-range" id="keyfileSize" min="32" max="1024" value="64" step="32">
+                                    <div class="keyfile-size-info" id="keyfileSizeInfo">
+                                        64 bytes = 512 bits - Recomendado para uso geral
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Tamanhos Predefinidos</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-primary w-100" id="keyfileSize64" type="button">
+                                                <strong>64 bytes</strong><br>
+                                                <small>Padrão Seguro</small>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-primary w-100" id="keyfileSize128" type="button">
+                                                <strong>128 bytes</strong><br>
+                                                <small>Alta Segurança</small>
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-primary w-100" id="keyfileSize256" type="button">
+                                                <strong>256 bytes</strong><br>
+                                                <small>Máxima Segurança</small>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="entropy-info" id="keyfileEntropyInfo" style="display: none;">
+                                    <div class="entropy-meter">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" id="keyfileEntropyBar" role="progressbar" style="width: 100%"></div>
+                                        </div>
+                                        <small id="keyfileEntropyValue">Entropia: 512 bits</small>
+                                    </div>
+                                    <div class="entropy-description" id="keyfileEntropyDescription">Muito Forte - Excelente para segurança criptográfica máxima.</div>
+                                </div>
+
+                                <div class="d-grid gap-2 mt-4">
+                                    <button class="btn btn-download btn-lg" id="generateKeyfileBtn">
+                                        <i class="fas fa-download me-2"></i>Gerar e Baixar keyfile.bin
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Painel para geração de senhas determinísticas (Modo Mestre). -->
+                            <div class="tab-pane fade" id="master-panel" role="tabpanel" aria-labelledby="master-tab">
+
+                                <div class="keyfile-info">
+                                    <h6><i class="fas fa-info-circle me-2"></i>Sobre o Modo Mestre</h6>
+                                    <p>O Modo Mestre gera senhas determinísticas usando sua senha mestra e um identificador único. A mesma combinação sempre produzirá a mesma senha, permitindo recuperação sem armazenamento.</p>
+                                </div>
+
+                                <!-- Campo para a senha mestra. -->
+                                <div class="mb-3">
+                                    <label for="masterPassword" class="form-label">Senha Mestra</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control bg-darker text-light" id="masterPassword" placeholder="Digite sua senha mestra">
+                                        <button class="btn btn-outline-secondary" type="button" id="toggleMasterPasswordBtn" title="Mostrar/Ocultar Senha Mestra">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Campo para o identificador do serviço/site. -->
+                                <div class="mb-3">
+                                    <label for="masterIdentifier" class="form-label">Identificador</label>
+                                    <input type="text" class="form-control bg-darker text-light" id="masterIdentifier" placeholder="ex: google.com, banco.com">
+                                    <div>
+                                      <p class="text-light opacity-75"><small>Use um identificador único para cada serviço ou site.</small></p>
+
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="mastert" class="form-label">Salt Pessoal (Opcional)</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control bg-darker text-light" id="masterSalt" placeholder="Salt adicional para maior segurança">
+                                        <button class="btn btn-outline-secondary" type="button" id="toggleMasterSaltBtn" title="Mostrar/Ocultar Salt">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-light opacity-75"><small>Adiciona uma camada extra de segurança. Mantenha-o secreto e consistente.</small></p>
+
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="masterPasswordLength" class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Tamanho da Senha</span>
+                                        <input type="number" class="size-display-input" id="masterLengthValue" min="8" max="128" value="16">
+                                    </label>
+                                    <input type="range" class="form-range" id="masterPasswordLength" min="8" max="128" value="16">
+                                </div>
+
+                                <!-- Opções de tipos de caracteres para a senha. -->
+                                <div class="mb-3">
+                                    <label class="form-label">Tipos de Caracteres</label>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseLowercase" checked>
+                                                <label class="form-check-label" for="masterUseLowercase">Minúsculas (a-z)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseUppercase" checked>
+                                                <label class="form-check-label" for="masterUseUppercase">Maiúsculas (A-Z)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseNumbers" checked>
+                                                <label class="form-check-label" for="masterUseNumbers">Números (0-9)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseSpecial" checked>
+                                                <label class="form-check-label" for="masterUseSpecial">Especiais (!@#$%^&*...)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterUseUnicode">
+                                                <label class="form-check-label" for="masterUseUnicode">Unicode (Complexos)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterExcludeAmbiguous" checked>
+                                                <label class="form-check-label" for="masterExcludeAmbiguous">Excluir Ambíguos (Il1O0...)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="masterAtLeastOneOfEach" checked>
+                                                <label class="form-check-label" for="masterAtLeastOneOfEach">Garantir um de cada tipo</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Botão para gerar a senha determinística. -->
+                                <div class="d-grid gap-2 mt-4">
+                                    <button class="btn btn-primary btn-lg" id="generateMasterBtn">
+                                        <i class="fas fa-key me-2"></i>Gerar Senha Determinística
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="mt-5 border-top border-secondary pt-4 text-center px-4">  
+            <p class="mb-2 text-light">  
+                <span class="d-md-inline-flex align-items-center gap-1">  
+                    <span class="text-warning">🔐</span>  
+                    Esta ferramenta gera senhas, frases secretas e arquivos de chave
+                    <span class="text-white fw-medium">localmente no seu dispositivo</span>.  
+                </span>  
+            </p>  
+            <p class="text-light opacity-75"><small>Nenhuma informação sensível é armazenada ou enviada pela internet.</small></p>
+                    <div class="mt-4 pt-3 border-top border-dark">
+            <a href="https://github.com/nekyl/GeNekyl" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="link-light text-decoration-none d-flex justify-content-center align-items-center gap-2">
+
+                <p class="mb-0 text-light opacity-75">
+                    <small>Achou útil? Deixe seu feedback, contribua ou reporte um problema</small>
+                </p>
+
+                <i class="fab fa-github fs-4"></i>
+            </a>
+        </div>
+    </footer> 
+    </div>
+
+    <!-- Importação do JavaScript do Bootstrap via CDN. -->
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script JavaScript embutido para a lógica da aplicação. -->
+      <script type="module" src="script.js"></script>
+</body>
+</html>
