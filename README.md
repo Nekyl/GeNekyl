@@ -135,19 +135,19 @@ Uma técnica avançada para criar senhas mestras fortes e memoráveis para cada 
 *   **Passo 1: Crie uma Base Forte e Aleatória.**
     Vá para a aba **"Frase Secreta"** (usando o modo Híbrido ou Diceware) e gere uma passphrase longa e complexa. Esta será sua base de alta entropia, impossível de adivinhar.
 
-    *   *Exemplo Real Gerado:*
+    *   *Exemplo Real Gerado (Nossa Base):*
         `engaged-antitoxic-uncooked-fleshy-pettiness-waso-diameter-tamoji-jova-nawe-gisu-nezo`
 
 *   **Passo 2: Injete sua "Malícia" Pessoal.**
-    Agora, para tornar essa frase inesquecível e vinculada a uma categoria específica (como "Bancos"), substitua uma ou duas palavras por algo que **só você** associaria àquele contexto.
+    Agora, para tornar essa frase inesquecível e vinculada a uma categoria específica, substitua uma ou duas palavras por algo que **só você** associaria àquele contexto.
 
     *   **Exemplo de Modificação para "Bancos":**
-        Vamos supor que você decida trocar a quarta palavra (`fleshy`) por `cifrao` e a quinta (`pettiness`) por `seguro`. Sua nova senha mestra para bancos se torna:
-        `engaged-antitoxic-uncooked-`**`cifrao`**`-`**`seguro`**`-waso-diameter-tamoji-jova-nawe-gisu-nezo`
+        Vamos supor que você decida trocar a quarta palavra (`fleshy`) por `cifrao` e a quinta (`pettiness`) por `seguro`. Sua nova senha mestra para bancos se torna:        
+        `engaged-antitoxic-uncooked-cifrao-seguro-waso-diameter-tamoji-jova-nawe-gisu-nezo`
 
     *   **Exemplo de Modificação para "Trabalho":**
-        Usando a **mesma base original**, você poderia trocar a primeira palavra (`engaged`) por `projeto` e a sétima (`diameter`) por `meta`:
-        **`projeto`**`-antitoxic-uncooked-fleshy-pettiness-waso-`**`meta`**`-tamoji-jova-nawe-gisu-nezo`
+        Você poderia trocar a primeira palavra (`engaged`) por `projeto` e a sétima (`diameter`) por `meta`. Sua nova senha mestra para trabalho se torna:      
+        `projeto-antitoxic-uncooked-fleshy-pettiness-waso-meta-tamoji-jova-nawe-gisu-nezo`
 
 Essa abordagem é extremamente segura porque um invasor enfrentaria uma barreira intransponível: ele não tem como saber a frase base original, quais palavras você trocou, por quais palavras você as substituiu, ou a lógica pessoal por trás dessas trocas.
 
