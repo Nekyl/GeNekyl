@@ -111,8 +111,7 @@ No modo de Frase Secreta, utilizamos uma lista de palavras baseada no método **
 
 ### 3. **Modo Mestre: Defesa em Profundidade**
 Segurança Ativa e Proteção de Usabilidade
-Segurança Ativa e Proteção de Usabilidade
-e com PBKDF2**
+e com **PBKDF2**.
 O Modo Mestre é projetado para ser extremamente resistente a ataques de força bruta. Para isso, ele utiliza o **PBKDF2 (Password-Based Key Derivation Function 2)**, um algoritmo padrão da indústria para "esticar" senhas. As configurações são deliberadamente rigorosas:
 - **Função Hash:** **SHA-512**, um algoritmo de hash seguro e robusto.
 - **Iterações:** **1.000.000 de iterações**. Este número massivo de iterações torna o processo de derivação propositalmente lento. Para você, a geração é quase instantânea. Para um invasor tentando adivinhar sua senha mestra, cada tentativa exigiria um poder computacional significativo, tornando ataques de dicionário ou força bruta impraticáveis.
