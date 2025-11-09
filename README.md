@@ -109,7 +109,7 @@ No modo de Frase Secreta, utilizamos uma lista de palavras baseada no método **
 - **Auditabilidade:** Uma lista pública pode ser auditada por especialistas em segurança para garantir que não contém palavras problemáticas ou padrões exploráveis.
 - **Segurança Combinatória:** A segurança não reside no segredo da lista, mas na vastidão matemática das combinações possíveis. Mesmo que um invasor tenha acesso à lista de palavras, para adivinhar uma frase secreta de, por exemplo, 6 palavras de uma lista de 7.776 palavras, ele teria que testar **7.776⁶ (mais de 221 sextilhões)** de combinações. Isso é computacionalmente inviável com a tecnologia atual e futura previsível.
 
-### 3. **Modo Mestre: Defesa em Profundidad
+### 3. **Modo Mestre: Defesa em Profundidade**
 Segurança Ativa e Proteção de Usabilidade
 Segurança Ativa e Proteção de Usabilidade
 e com PBKDF2**
