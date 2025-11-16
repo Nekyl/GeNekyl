@@ -1,6 +1,6 @@
 {
-  "name": "Gerador de Senhas Seguras",
-  "short_name": "Gerador Senhas",
+  "name": "GeNekyl",
+  "short_name": "GeNekyl",
   "description": "Crie senhas e frases secretas fortes e seguras localmente no seu navegador",
   "start_url": "./",
   "display": "standalone",
